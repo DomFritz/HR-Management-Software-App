@@ -1,0 +1,39 @@
+﻿<Window x:Class="HRManagement_ServiceApplication.CreateEmployee"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HRManagement_ServiceApplication"
+        mc:Ignorable="d"
+        Title="Mitarbeiter erstellen" Height="445.876" Width="462.22" ResizeMode="NoResize" Icon="Images/HRManagement.png">
+    <Grid Margin="0,0,16,0" HorizontalAlignment="Right" Width="413">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="62*"/>
+            <RowDefinition Height="29*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="189*"/>
+            <ColumnDefinition Width="31*"/>
+            <ColumnDefinition Width="22*"/>
+            <ColumnDefinition Width="208*"/>
+        </Grid.ColumnDefinitions>
+        <Label x:Name="mLabelID" Content="Mitarbeiter-ID" HorizontalAlignment="Left" Height="23" Margin="10,10,0,0" VerticalAlignment="Top" Width="89"/>
+        <TextBox x:Name="mTextBoxID" HorizontalAlignment="Left" IsEnabled="false" Height="23" Margin="116,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="289" Grid.ColumnSpan="4"/>
+        <Label x:Name="mLabelFirstName" Content="Vorname" HorizontalAlignment="Left" Height="29" Margin="10,47,0,0" VerticalAlignment="Top" Width="81" RenderTransformOrigin="0.347,0.461"/>
+        <TextBox x:Name="mTextBoxFirstName" HorizontalAlignment="Left" Height="23" Margin="116,47,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="289" Grid.ColumnSpan="4"/>
+        <Label x:Name="mLabelLastName" Content="Nachname" HorizontalAlignment="Left" Height="29" Margin="10,86,0,0" VerticalAlignment="Top" Width="81" RenderTransformOrigin="0.347,0.461"/>
+        <TextBox x:Name="mTextBoxLastName" HorizontalAlignment="Left" Height="23" Margin="116,86,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="289" Grid.ColumnSpan="4"/>
+        <Label x:Name="mLabelAge" Content="Alter" HorizontalAlignment="Left" Margin="10,123,0,0" VerticalAlignment="Top" Width="72"/>
+        <TextBox x:Name="mTextBoxAge" HorizontalAlignment="Left" Height="23" Margin="116,123,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="66" Grid.ColumnSpan="2"/>
+        <Button x:Name="mButtonSaveClose" Content="Mitarbeiter hinzufügen" HorizontalAlignment="Right" Height="26" Margin="0,79,10,0" VerticalAlignment="Top" Width="141" Grid.Column="3" RenderTransformOrigin="-0.001,0.629" Grid.Row="1" Click="mButtonSaveAndClose_Click"/>
+        <GroupBox x:Name="mGroupBoxAddresse" Grid.ColumnSpan="4" Header="Addresse" HorizontalAlignment="Left" Height="179" Margin="8,165,0,0" VerticalAlignment="Top" Width="397" Grid.RowSpan="2"/>
+        <Label x:Name="mLabelStreet" Content="Straße" HorizontalAlignment="Left" Margin="27,189,0,0" VerticalAlignment="Top" Width="72"/>
+        <TextBox x:Name="mTextBoxStreet" HorizontalAlignment="Left" Height="23" Margin="116,189,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="272" Grid.ColumnSpan="4"/>
+        <Label x:Name="mLabelCity" Content="Ort" HorizontalAlignment="Left" Margin="27,227,0,0" VerticalAlignment="Top" Width="72" Grid.RowSpan="2"/>
+        <TextBox x:Name="mTextBoxCity" HorizontalAlignment="Left" Height="23" Margin="116,227,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="272" Grid.ColumnSpan="4" Grid.RowSpan="2"/>
+        <Label x:Name="mLabelZip" Content="PLZ" HorizontalAlignment="Left" Margin="27,266,0,0" VerticalAlignment="Top" Width="72" Grid.RowSpan="2"/>
+        <TextBox x:Name="mTextBoxZip" HorizontalAlignment="Left" Height="23" Margin="116,264,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="83" Grid.ColumnSpan="2" Grid.RowSpan="2"/>
+        <Label x:Name="mLabelZip_Copy" Content="Staat" HorizontalAlignment="Left" Margin="27,24,0,0" VerticalAlignment="Top" Width="72" Grid.Row="1"/>
+        <TextBox x:Name="mTextBoxState" HorizontalAlignment="Left" Height="23" Margin="116,24,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="272" Grid.ColumnSpan="4" Grid.Row="1"/>
+    </Grid>
+</Window>

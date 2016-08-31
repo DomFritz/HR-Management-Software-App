@@ -1,0 +1,153 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="WcfEmployeeDatabaseService" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import namespace="http://tempuri.org/" />
+      <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/WcfDatabaseService" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IWcfEmployeeDatabaseService_InsertEmployeeAndAddressIfNotAvailable_InputMessage">
+    <wsdl:part name="parameters" element="tns:InsertEmployeeAndAddressIfNotAvailable" />
+  </wsdl:message>
+  <wsdl:message name="IWcfEmployeeDatabaseService_InsertEmployeeAndAddressIfNotAvailable_OutputMessage">
+    <wsdl:part name="parameters" element="tns:InsertEmployeeAndAddressIfNotAvailableResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWcfEmployeeDatabaseService_InsertAddress_InputMessage">
+    <wsdl:part name="parameters" element="tns:InsertAddress" />
+  </wsdl:message>
+  <wsdl:message name="IWcfEmployeeDatabaseService_InsertAddress_OutputMessage">
+    <wsdl:part name="parameters" element="tns:InsertAddressResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWcfEmployeeDatabaseService_ReadAllEmployees_InputMessage">
+    <wsdl:part name="parameters" element="tns:ReadAllEmployees" />
+  </wsdl:message>
+  <wsdl:message name="IWcfEmployeeDatabaseService_ReadAllEmployees_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ReadAllEmployeesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWcfEmployeeDatabaseService_ReadAllAddresses_InputMessage">
+    <wsdl:part name="parameters" element="tns:ReadAllAddresses" />
+  </wsdl:message>
+  <wsdl:message name="IWcfEmployeeDatabaseService_ReadAllAddresses_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ReadAllAddressesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWcfEmployeeDatabaseService_UpdateEmployeeAndAddress_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateEmployeeAndAddress" />
+  </wsdl:message>
+  <wsdl:message name="IWcfEmployeeDatabaseService_UpdateEmployeeAndAddress_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateEmployeeAndAddressResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWcfEmployeeDatabaseService_DeleteEmployee_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteEmployee" />
+  </wsdl:message>
+  <wsdl:message name="IWcfEmployeeDatabaseService_DeleteEmployee_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteEmployeeResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWcfEmployeeDatabaseService_DeleteAddressWhenNotUsedByOtherEmployee_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteAddressWhenNotUsedByOtherEmployee" />
+  </wsdl:message>
+  <wsdl:message name="IWcfEmployeeDatabaseService_DeleteAddressWhenNotUsedByOtherEmployee_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteAddressWhenNotUsedByOtherEmployeeResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IWcfEmployeeDatabaseService">
+    <wsdl:operation name="InsertEmployeeAndAddressIfNotAvailable">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/InsertEmployeeAndAddressIfNotAvailable" message="tns:IWcfEmployeeDatabaseService_InsertEmployeeAndAddressIfNotAvailable_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/InsertEmployeeAndAddressIfNotAvailableResponse" message="tns:IWcfEmployeeDatabaseService_InsertEmployeeAndAddressIfNotAvailable_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="InsertAddress">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/InsertAddress" message="tns:IWcfEmployeeDatabaseService_InsertAddress_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/InsertAddressResponse" message="tns:IWcfEmployeeDatabaseService_InsertAddress_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ReadAllEmployees">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/ReadAllEmployees" message="tns:IWcfEmployeeDatabaseService_ReadAllEmployees_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/ReadAllEmployeesResponse" message="tns:IWcfEmployeeDatabaseService_ReadAllEmployees_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ReadAllAddresses">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/ReadAllAddresses" message="tns:IWcfEmployeeDatabaseService_ReadAllAddresses_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/ReadAllAddressesResponse" message="tns:IWcfEmployeeDatabaseService_ReadAllAddresses_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateEmployeeAndAddress">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/UpdateEmployeeAndAddress" message="tns:IWcfEmployeeDatabaseService_UpdateEmployeeAndAddress_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/UpdateEmployeeAndAddressResponse" message="tns:IWcfEmployeeDatabaseService_UpdateEmployeeAndAddress_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteEmployee">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteEmployee" message="tns:IWcfEmployeeDatabaseService_DeleteEmployee_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteEmployeeResponse" message="tns:IWcfEmployeeDatabaseService_DeleteEmployee_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteAddressWhenNotUsedByOtherEmployee">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddressWhenNotUsedByOtherEmployee" message="tns:IWcfEmployeeDatabaseService_DeleteAddressWhenNotUsedByOtherEmployee_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddressWhenNotUsedByOtherEmployeeResponse" message="tns:IWcfEmployeeDatabaseService_DeleteAddressWhenNotUsedByOtherEmployee_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BasicHttpBinding_IWcfEmployeeDatabaseService" type="tns:IWcfEmployeeDatabaseService">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="InsertEmployeeAndAddressIfNotAvailable">
+      <soap:operation soapAction="http://tempuri.org/IWcfEmployeeDatabaseService/InsertEmployeeAndAddressIfNotAvailable" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="InsertAddress">
+      <soap:operation soapAction="http://tempuri.org/IWcfEmployeeDatabaseService/InsertAddress" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ReadAllEmployees">
+      <soap:operation soapAction="http://tempuri.org/IWcfEmployeeDatabaseService/ReadAllEmployees" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ReadAllAddresses">
+      <soap:operation soapAction="http://tempuri.org/IWcfEmployeeDatabaseService/ReadAllAddresses" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateEmployeeAndAddress">
+      <soap:operation soapAction="http://tempuri.org/IWcfEmployeeDatabaseService/UpdateEmployeeAndAddress" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteEmployee">
+      <soap:operation soapAction="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteEmployee" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteAddressWhenNotUsedByOtherEmployee">
+      <soap:operation soapAction="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddressWhenNotUsedByOtherEmployee" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="WcfEmployeeDatabaseService">
+    <wsdl:port name="BasicHttpBinding_IWcfEmployeeDatabaseService" binding="tns:BasicHttpBinding_IWcfEmployeeDatabaseService">
+      <soap:address location="http://localhost:8733/Design_Time_Addresses/WcfDatabaseService/IWcfEmployeeDatabaseService/" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
