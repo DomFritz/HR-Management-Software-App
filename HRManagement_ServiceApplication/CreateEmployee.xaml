@@ -25,7 +25,7 @@
         <TextBox x:Name="mTextBoxLastName" HorizontalAlignment="Left" Height="23" Margin="116,86,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="289" Grid.ColumnSpan="4"/>
         <Label x:Name="mLabelAge" Content="Alter" HorizontalAlignment="Left" Margin="10,123,0,0" VerticalAlignment="Top" Width="72"/>
         <TextBox x:Name="mTextBoxAge" HorizontalAlignment="Left" Height="23" Margin="116,123,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="66" Grid.ColumnSpan="2"/>
-        <Button x:Name="mButtonSaveClose" Content="Mitarbeiter hinzufügen" HorizontalAlignment="Right" Height="26" Margin="0,79,10,0" VerticalAlignment="Top" Width="141" Grid.Column="3" RenderTransformOrigin="-0.001,0.629" Grid.Row="1" Click="mButtonSaveAndClose_Click"/>
+        <Button x:Name="mButtonSaveClose" Content="Mitarbeiter hinzufügen" HorizontalAlignment="Right" Height="26" Margin="0,79,10,0" VerticalAlignment="Top" Width="153" Grid.Column="3" RenderTransformOrigin="-0.001,0.629" Grid.Row="1" Click="mButtonSaveAndClose_Click"/>
         <GroupBox x:Name="mGroupBoxAddresse" Grid.ColumnSpan="4" Header="Addresse" HorizontalAlignment="Left" Height="179" Margin="8,165,0,0" VerticalAlignment="Top" Width="397" Grid.RowSpan="2"/>
         <Label x:Name="mLabelStreet" Content="Straße" HorizontalAlignment="Left" Margin="27,189,0,0" VerticalAlignment="Top" Width="72"/>
         <TextBox x:Name="mTextBoxStreet" HorizontalAlignment="Left" Height="23" Margin="116,189,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="272" Grid.ColumnSpan="4"/>

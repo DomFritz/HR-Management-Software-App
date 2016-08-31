@@ -52,7 +52,7 @@ namespace HRManagement_ServiceApplication
             }
             else
             {
-                mButtonSaveClose.Content = "Mitarbeiter aktualisieren";
+                mButtonSaveClose.Content = "Änderungen übernehmen";
                 Title = "Mitarbeiter bearbeiten";
 
                 mTextBoxID.Text = employeeToUpdate.Id.ToString();
