@@ -47,8 +47,8 @@ namespace HRManagement_ServiceApplication
             if (mode == DialogMode.Create)
             {
                 mNewGuid = Guid.NewGuid();
-
                 mTextBoxID.Text = mNewGuid.ToString();
+                mTextBoxFirstName.Focus();
             }
             else
             {
