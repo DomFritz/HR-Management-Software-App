@@ -148,6 +148,12 @@ namespace HRManagement_ServiceApplication
             WcfEmployeeDatabaseServiceClient client = new WcfEmployeeDatabaseServiceClient();
             var employees = client.ReadAllEmployees();
 
+            if (!employees.Any())
+            {
+                MessageBox.Show("Es sind keine Mitarbeiter vorhanden, die in eine XML-Datei geschrieben werden können.");
+                return;
+            }
+
             string outputPath = EmployeeXMLWriter.WriteEmployeeXML(employees.ToList());
 
             MessageBox.Show(string.Format("Die Datei wurde erfolgreich unter folgendem Pfad erstellt: {0}.", outputPath));
