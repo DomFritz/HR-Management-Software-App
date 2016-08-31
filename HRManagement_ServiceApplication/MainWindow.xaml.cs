@@ -78,7 +78,7 @@ namespace HRManagement_ServiceApplication
 
                 if (employee != null)
                 {
-                    new CreateEmployee(DialogMode.Update, this, mEmployeeView.SelectedItem as Employee).Show();
+                    new CreateEmployee(DialogMode.Update, this, mEmployeeView.SelectedItem != null ? mEmployeeView.SelectedItem as Employee : employee).Show();
                 }
             }
         }
