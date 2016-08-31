@@ -41,12 +41,12 @@ namespace WcfDatabaseService
 
                 mDatabaseConnection = new SQLiteConnection(connectionString);
                 mDatabaseConnection.Open();
-                var databaseCommand = mDatabaseConnection.CreateCommand();
 
                 // in the next steps, the script for creating the data tables will be executed.
                 FileInfo file = new FileInfo(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), @"Scripts\Create_Tables.sql"));
                 string script = file.OpenText().ReadToEnd();
-                databaseCommand = new SQLiteCommand(script, mDatabaseConnection);
+
+                var databaseCommand = new SQLiteCommand(script, mDatabaseConnection);
                 databaseCommand.ExecuteNonQuery();
                 databaseCommand.Dispose();
             }
