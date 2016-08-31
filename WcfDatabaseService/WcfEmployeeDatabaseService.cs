@@ -209,6 +209,7 @@ namespace WcfDatabaseService
                     allAddresses.Add(a);
                 }
 
+                reader.Close();
                 newCommand.Dispose();
                 return allAddresses;
             }
