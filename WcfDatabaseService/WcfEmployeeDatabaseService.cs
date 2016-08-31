@@ -107,7 +107,7 @@ namespace WcfDatabaseService
             }
             catch(Exception)
             {
-                throw; // problem with the database...
+                return -1; // problem with database
             }
             finally
             {
@@ -157,7 +157,7 @@ namespace WcfDatabaseService
                 }
                 catch (Exception)
                 {
-                    throw;
+                    return -1;
                 }
                 finally
                 {
@@ -215,7 +215,7 @@ namespace WcfDatabaseService
             }
             catch (Exception)
             {
-                throw;
+                return allAddresses; // return empty collection if problems happen
             }
             finally
             {
@@ -269,7 +269,7 @@ namespace WcfDatabaseService
             }
             catch(Exception)
             {
-                throw;
+                return allEmployees; // return empty list if problems happen
             }
             finally
             {
@@ -314,7 +314,7 @@ namespace WcfDatabaseService
             }
             catch (Exception)
             {
-                throw;
+                return 0;
             }
             finally
             {
@@ -355,7 +355,7 @@ namespace WcfDatabaseService
             }
             catch (Exception)
             {
-                throw;
+                return 0;
             }
             finally
             {
@@ -417,7 +417,7 @@ namespace WcfDatabaseService
             }
             catch (Exception)
             {
-                throw;
+                return;
             }
             finally
             {
@@ -454,7 +454,7 @@ namespace WcfDatabaseService
             }
             catch (Exception)
             {
-                throw;
+                return 0;
             }
             finally
             {
