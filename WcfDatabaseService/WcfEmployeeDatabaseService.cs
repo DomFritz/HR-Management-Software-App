@@ -32,7 +32,7 @@ namespace WcfDatabaseService
             string database = Path.Combine(folderPathToDatabase, string.Format("{0}.{1}", "database", "sqlite"));
             var connectionString = string.Format(@"data source='{0}'", database);
 
-            if (!Directory.Exists(folderPathToDatabase) && !File.Exists(database)) // if there is no available database
+            if (!Directory.Exists(folderPathToDatabase) || !File.Exists(database)) // if there is no available database
             {
                 // create the directory in the appdata-folder
                 Directory.CreateDirectory(folderPathToDatabase);
