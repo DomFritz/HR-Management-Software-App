@@ -25,7 +25,7 @@ namespace WcfDatabaseService
         ObservableCollection<Address> ReadAllAddresses(Employee e = null);
 
         [OperationContract]
-        bool UpdateEmployeeAndAddresses(Employee e);
+        int UpdateEmployeeAndAddresses(Employee e);
 
         [OperationContract]
         int UpdateAddress(Address a, Guid employeeId);
@@ -34,9 +34,9 @@ namespace WcfDatabaseService
         int DeleteEmployee(Employee e);
 
         [OperationContract]
-        void DeleteAddress(Address a);
+        int DeleteAddress(Address a);
 
         [OperationContract]
-        void DeleteAddressesOfEmployee(Guid employeeId);
+        int DeleteAddressesOfEmployee(Guid employeeId);
     }
 }

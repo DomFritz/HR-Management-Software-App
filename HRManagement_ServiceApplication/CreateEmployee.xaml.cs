@@ -119,7 +119,7 @@ namespace HRManagement_ServiceApplication
                 }
                 else if (retVal == -1)
                 {
-                    MessageBox.Show("Es konnte keine Datenbankverbindung aufgebaut werden.");
+                    MessageBox.Show("Es besteht ein Problem mit der Datenbank. Bitte prüfen Sie diese und die Verbindung");
                 }
             }
             else
@@ -136,8 +136,8 @@ namespace HRManagement_ServiceApplication
                 mEmployeeToUpdate.Addresses = createdAddresses.ToArray();
 
                 serviceClient.DeleteAddressesOfEmployee(mEmployeeToUpdate.Id); // delete all addresses before adding all created ones.
-                bool retVal = serviceClient.UpdateEmployeeAndAddresses(mEmployeeToUpdate);
-                if (retVal)
+                int retVal = serviceClient.UpdateEmployeeAndAddresses(mEmployeeToUpdate);
+                if (retVal > 0)
                 {
                     MessageBox.Show("Der Datensatz wurde erfolgreich aktualisiert.");
                     this.Close();

@@ -143,6 +143,7 @@ namespace HRManagement_ServiceApplication
                 {
                     MessageBox.Show("Der Mitarbeiter konnte nicht gelöscht werden.");
                 }
+
                 this.UpdateEmployeeList();
             }
         }

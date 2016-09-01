@@ -32,7 +32,7 @@ namespace WcfDatabaseService
             string database = Path.Combine(folderPathToDatabase, string.Format("{0}.{1}", "database", "sqlite"));
             var connectionString = string.Format(@"data source='{0}'", database);
 
-            if (!Directory.Exists(folderPathToDatabase) || !File.Exists(database)) // if there is no available database
+            if (!Directory.Exists(folderPathToDatabase) || !File.Exists(database)) // if there exists no available database
             {
                 // create the directory in the appdata-folder
                 Directory.CreateDirectory(folderPathToDatabase);
@@ -44,13 +44,12 @@ namespace WcfDatabaseService
 
                 // in the next steps, the script for creating the data tables will be executed.
                 FileInfo file = new FileInfo(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), @"Scripts\Create_Tables.sql"));
-                string script = file.OpenText().ReadToEnd();
-
-                var databaseCommand = new SQLiteCommand(script, mDatabaseConnection);
-                databaseCommand.ExecuteNonQuery();
-                databaseCommand.Dispose();
+                using (var databaseCommand = new SQLiteCommand(file.OpenText().ReadToEnd(), mDatabaseConnection))
+                {
+                    databaseCommand.ExecuteNonQuery();
+                }
             }
-            else // if there is already an available database with data
+            else // if there is already an available database with data or the empty tables
             {
                 mDatabaseConnection = new SQLiteConnection(connectionString);
                 mDatabaseConnection.Open();
@@ -58,6 +57,7 @@ namespace WcfDatabaseService
         }
 
         #region database-inserts
+
         // Create a new employee in the database and the address for him. If this address is already existing, do not create a new one, use this.
         public int InsertEmployeeAndAddresses(Employee e)
         {
@@ -69,26 +69,31 @@ namespace WcfDatabaseService
 
             try
             {
-                var databaseCommand = new SQLiteCommand(mDatabaseConnection);
+                int retVal = -1;
 
-                databaseCommand.CommandText = "INSERT INTO Employee VALUES (@Id, @FirstName, @LastName, @Age)";
-                databaseCommand.Parameters.AddWithValue("Id", e.Id.ToString());
-                databaseCommand.Parameters.AddWithValue("FirstName", e.FirstName);
-                databaseCommand.Parameters.AddWithValue("LastName", e.LastName);
-                databaseCommand.Parameters.AddWithValue("Age", e.Age);
-
-                databaseCommand.CommandType = System.Data.CommandType.Text;
-                if (mDatabaseConnection.State != System.Data.ConnectionState.Open)
+                using (var databaseCommand = new SQLiteCommand(mDatabaseConnection))
                 {
-                    mDatabaseConnection.Open();
-                }
+                    databaseCommand.CommandText = "INSERT INTO Employee VALUES (@Id, @FirstName, @LastName, @Age)";
+                    databaseCommand.Parameters.AddWithValue("Id", e.Id.ToString());
+                    databaseCommand.Parameters.AddWithValue("FirstName", e.FirstName);
+                    databaseCommand.Parameters.AddWithValue("LastName", e.LastName);
+                    databaseCommand.Parameters.AddWithValue("Age", e.Age);
 
-                int retVal = databaseCommand.ExecuteNonQuery();
-                databaseCommand.Dispose();
+                    databaseCommand.CommandType = System.Data.CommandType.Text;
+                    if (mDatabaseConnection.State != System.Data.ConnectionState.Open)
+                    {
+                        mDatabaseConnection.Open();
+                    }
+
+                    retVal = databaseCommand.ExecuteNonQuery();
+                }
 
                 foreach (var address in e.Addresses)
                 {
-                    InsertAddress(address, e.Id);
+                    if(InsertAddress(address, e.Id) == -1)
+                    {
+                        return -1;
+                    }
                 }
 
                 return retVal;
@@ -117,25 +122,24 @@ namespace WcfDatabaseService
 
             try
             {
-                var newCommand = new SQLiteCommand(mDatabaseConnection);
-
-                newCommand.CommandText = "INSERT INTO Address VALUES (@Id, @Street, @Zip, @City, @State, @EmployeeId)";
-                newCommand.Parameters.AddWithValue("Id", a.Id.ToString());
-                newCommand.Parameters.AddWithValue("Street", a.Street);
-                newCommand.Parameters.AddWithValue("Zip", a.Zip);
-                newCommand.Parameters.AddWithValue("City", a.City);
-                newCommand.Parameters.AddWithValue("State", a.State);
-                newCommand.Parameters.AddWithValue("EmployeeId", employeeId.ToString());
-
-                newCommand.CommandType = System.Data.CommandType.Text;
-                if (mDatabaseConnection.State != System.Data.ConnectionState.Open)
+                using (var newCommand = new SQLiteCommand(mDatabaseConnection))
                 {
-                    mDatabaseConnection.Open();
-                }
+                    newCommand.CommandText = "INSERT INTO Address VALUES (@Id, @Street, @Zip, @City, @State, @EmployeeId)";
+                    newCommand.Parameters.AddWithValue("Id", a.Id.ToString());
+                    newCommand.Parameters.AddWithValue("Street", a.Street);
+                    newCommand.Parameters.AddWithValue("Zip", a.Zip);
+                    newCommand.Parameters.AddWithValue("City", a.City);
+                    newCommand.Parameters.AddWithValue("State", a.State);
+                    newCommand.Parameters.AddWithValue("EmployeeId", employeeId.ToString());
 
-                int retVal = newCommand.ExecuteNonQuery();
-                newCommand.Dispose();
-                return retVal;
+                    newCommand.CommandType = System.Data.CommandType.Text;
+                    if (mDatabaseConnection.State != System.Data.ConnectionState.Open)
+                    {
+                        mDatabaseConnection.Open();
+                    }
+
+                    return newCommand.ExecuteNonQuery();
+                }
             }
             catch (Exception)
             {
@@ -165,45 +169,46 @@ namespace WcfDatabaseService
             
             try
             {
-                var newCommand = new SQLiteCommand(mDatabaseConnection);
-
-                // if employee is set, we only choose the addresses for the employee
-                if(e == null)
+                using (var newCommand = new SQLiteCommand(mDatabaseConnection))
                 {
-                    newCommand.CommandText = "SELECT * FROM Address";
-                }
-                else
-                {
-                    newCommand.CommandText = "SELECT * FROM Address WHERE EmployeeId=@EmployeeId";
-                    newCommand.Parameters.AddWithValue("EmployeeId", e.Id.ToString());
-                }
-
-                newCommand.CommandType = System.Data.CommandType.Text;
-                if (mDatabaseConnection.State != System.Data.ConnectionState.Open)
-                {
-                    mDatabaseConnection.Open();
-                }
-
-                var reader = newCommand.ExecuteReader();
-                while (reader.Read())
-                {
-                    Address a = new Address();
-                    a.Id = Guid.Parse(reader["Id"].ToString());
-                    a.Street = reader["Street"].ToString();
-                    int zip = 0;
-                    if (Int32.TryParse(reader["Zip"].ToString(), out zip))
+                    // if employee is set, we only choose the addresses for the employee
+                    if (e == null)
                     {
-                        a.Zip = zip;
+                        newCommand.CommandText = "SELECT * FROM Address";
                     }
-                    a.City = reader["City"].ToString();
-                    a.State = reader["State"].ToString();
-                    a.EmployeeId = Guid.Parse(reader["EmployeeId"].ToString());
+                    else
+                    {
+                        newCommand.CommandText = "SELECT * FROM Address WHERE EmployeeId=@EmployeeId";
+                        newCommand.Parameters.AddWithValue("EmployeeId", e.Id.ToString());
+                    }
 
-                    allAddresses.Add(a);
+                    newCommand.CommandType = System.Data.CommandType.Text;
+                    if (mDatabaseConnection.State != System.Data.ConnectionState.Open)
+                    {
+                        mDatabaseConnection.Open();
+                    }
+
+                    var reader = newCommand.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        Address a = new Address();
+                        a.Id = Guid.Parse(reader["Id"].ToString());
+                        a.Street = reader["Street"].ToString();
+                        int zip = 0;
+                        if (Int32.TryParse(reader["Zip"].ToString(), out zip))
+                        {
+                            a.Zip = zip;
+                        }
+                        a.City = reader["City"].ToString();
+                        a.State = reader["State"].ToString();
+                        a.EmployeeId = Guid.Parse(reader["EmployeeId"].ToString());
+
+                        allAddresses.Add(a);
+                    }
+
+                    reader.Close();
                 }
 
-                reader.Close();
-                newCommand.Dispose();
                 return allAddresses;
             }
             catch (Exception)
@@ -229,35 +234,37 @@ namespace WcfDatabaseService
 
             try
             {
-                var employeeCommand = new SQLiteCommand(mDatabaseConnection);
-                employeeCommand.CommandText = "SELECT * FROM Employee";
-                employeeCommand.CommandType = System.Data.CommandType.Text;
-
-                var allAddresses = this.ReadAllAddresses();
-                if (mDatabaseConnection.State != System.Data.ConnectionState.Open)
+                using (var employeeCommand = new SQLiteCommand(mDatabaseConnection))
                 {
-                    mDatabaseConnection.Open();
-                }
+                    employeeCommand.CommandText = "SELECT * FROM Employee";
+                    employeeCommand.CommandType = System.Data.CommandType.Text;
 
-                var reader = employeeCommand.ExecuteReader();
-                while (reader.Read())
-                {
-                    Employee e = new Employee();
-                    e.Id = Guid.Parse(reader["Id"].ToString());
-                    e.FirstName = reader["FirstName"].ToString();
-                    e.LastName = reader["LastName"].ToString();
-                    int age = -1;
-                    if (Int32.TryParse(reader["Age"].ToString(), out age))
+                    var allAddresses = this.ReadAllAddresses();
+                    if (mDatabaseConnection.State != System.Data.ConnectionState.Open)
                     {
-                        e.Age = age;
+                        mDatabaseConnection.Open();
                     }
-                    e.Addresses = allAddresses.Where(x => x.EmployeeId.Equals(e.Id)).ToList();
 
-                    allEmployees.Add(e);
+                    var reader = employeeCommand.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        Employee e = new Employee();
+                        e.Id = Guid.Parse(reader["Id"].ToString());
+                        e.FirstName = reader["FirstName"].ToString();
+                        e.LastName = reader["LastName"].ToString();
+                        int age = -1;
+                        if (Int32.TryParse(reader["Age"].ToString(), out age))
+                        {
+                            e.Age = age;
+                        }
+                        e.Addresses = allAddresses.Where(x => x.EmployeeId.Equals(e.Id)).ToList();
+
+                        allEmployees.Add(e);
+                    }
+
+                    reader.Close();
                 }
 
-                reader.Close();
-                employeeCommand.Dispose();
                 return allEmployees;
             }
             catch (Exception)
@@ -286,27 +293,26 @@ namespace WcfDatabaseService
         {
             try
             {
-                var newCommand = new SQLiteCommand(mDatabaseConnection);
-
-                newCommand.CommandText = "UPDATE Employee SET FirstName=@FirstName, LastName=@LastName, Age=@Age WHERE Id=@Id";
-                newCommand.Parameters.AddWithValue("FirstName", e.FirstName);
-                newCommand.Parameters.AddWithValue("LastName", e.LastName);
-                newCommand.Parameters.AddWithValue("Age", e.Age);
-                newCommand.Parameters.AddWithValue("Id", e.Id.ToString());
-                newCommand.CommandType = System.Data.CommandType.Text;
-
-                if (mDatabaseConnection.State != System.Data.ConnectionState.Open)
+                using (var newCommand = new SQLiteCommand(mDatabaseConnection))
                 {
-                    mDatabaseConnection.Open();
-                }
+                    newCommand.CommandText = "UPDATE Employee SET FirstName=@FirstName, LastName=@LastName, Age=@Age WHERE Id=@Id";
+                    newCommand.Parameters.AddWithValue("FirstName", e.FirstName);
+                    newCommand.Parameters.AddWithValue("LastName", e.LastName);
+                    newCommand.Parameters.AddWithValue("Age", e.Age);
+                    newCommand.Parameters.AddWithValue("Id", e.Id.ToString());
+                    newCommand.CommandType = System.Data.CommandType.Text;
 
-                int retVal = newCommand.ExecuteNonQuery();
-                newCommand.Dispose();
-                return retVal;
+                    if (mDatabaseConnection.State != System.Data.ConnectionState.Open)
+                    {
+                        mDatabaseConnection.Open();
+                    }
+
+                    return newCommand.ExecuteNonQuery();
+                }
             }
             catch (Exception)
             {
-                return 0;
+                return -1;
             }
             finally
             {
@@ -326,29 +332,28 @@ namespace WcfDatabaseService
         {
             try
             {
-                var newCommand = new SQLiteCommand(mDatabaseConnection);
-
-                newCommand.CommandText = "UPDATE Address SET Street=@Street, Zip=@Zip, City=@City, State=@State, EmployeeId=@EmployeeId WHERE Id=@Id";
-                newCommand.Parameters.AddWithValue("Street", a.Street);
-                newCommand.Parameters.AddWithValue("Zip", a.Zip);
-                newCommand.Parameters.AddWithValue("City", a.City);
-                newCommand.Parameters.AddWithValue("State", a.State);
-                newCommand.Parameters.AddWithValue("EmployeeId", employeeId.ToString());
-                newCommand.Parameters.AddWithValue("Id", a.Id.ToString());
-                newCommand.CommandType = System.Data.CommandType.Text;
-
-                if (mDatabaseConnection.State != System.Data.ConnectionState.Open)
+                using (var newCommand = new SQLiteCommand(mDatabaseConnection))
                 {
-                    mDatabaseConnection.Open();
-                }
+                    newCommand.CommandText = "UPDATE Address SET Street=@Street, Zip=@Zip, City=@City, State=@State, EmployeeId=@EmployeeId WHERE Id=@Id";
+                    newCommand.Parameters.AddWithValue("Street", a.Street);
+                    newCommand.Parameters.AddWithValue("Zip", a.Zip);
+                    newCommand.Parameters.AddWithValue("City", a.City);
+                    newCommand.Parameters.AddWithValue("State", a.State);
+                    newCommand.Parameters.AddWithValue("EmployeeId", employeeId.ToString());
+                    newCommand.Parameters.AddWithValue("Id", a.Id.ToString());
+                    newCommand.CommandType = System.Data.CommandType.Text;
 
-                int retVal = newCommand.ExecuteNonQuery();
-                newCommand.Dispose();
-                return retVal;
+                    if (mDatabaseConnection.State != System.Data.ConnectionState.Open)
+                    {
+                        mDatabaseConnection.Open();
+                    }
+
+                    return newCommand.ExecuteNonQuery();
+                }
             }
             catch (Exception)
             {
-                return 0;
+                return -1;
             }
             finally
             {
@@ -364,27 +369,33 @@ namespace WcfDatabaseService
         /// </summary>
         /// <param name="The Employee to update"></param>
         /// <returns>true if updated successfully, false if not</returns>
-        public bool UpdateEmployeeAndAddresses(Employee e)
+        public int UpdateEmployeeAndAddresses(Employee e)
         {
             foreach (var address in e.Addresses)
             {
                 if (ReadAllAddresses(e).Contains(address)) // check if there is already an address for this employee
                 {
-                    UpdateAddress(address, e.Id);
+                    if (UpdateAddress(address, e.Id) == -1) 
+                    {
+                        return -1;
+                    }
                 }
                 else
                 {
-                    InsertAddress(address, e.Id);
+                    if (InsertAddress(address, e.Id) == -1)
+                    {
+                        return -1;
+                    }
                 }
             }
 
             if (UpdateEmployee(e) == 0) // update the employee and check if it was successfull
             {
-                return false;
+                return -1;
             }
             else
             {
-                return true;
+                return 1;
             }
         }
 
@@ -392,27 +403,27 @@ namespace WcfDatabaseService
 
         #region deleting employees and addresses of the database.
 
-        public void DeleteAddressesOfEmployee(Guid employeeId)
+        public int DeleteAddressesOfEmployee(Guid employeeId)
         {
             try
             {
-                var newCommand = new SQLiteCommand(mDatabaseConnection);
-
-                newCommand.CommandText = "DELETE FROM Address WHERE EmployeeId=@EmployeeId";
-                newCommand.Parameters.AddWithValue("EmployeeId", employeeId.ToString());
-                newCommand.CommandType = System.Data.CommandType.Text;
-
-                if (mDatabaseConnection.State != System.Data.ConnectionState.Open)
+                using (var newCommand = new SQLiteCommand(mDatabaseConnection))
                 {
-                    mDatabaseConnection.Open();
-                }
+                    newCommand.CommandText = "DELETE FROM Address WHERE EmployeeId=@EmployeeId";
+                    newCommand.Parameters.AddWithValue("EmployeeId", employeeId.ToString());
+                    newCommand.CommandType = System.Data.CommandType.Text;
 
-                newCommand.ExecuteNonQuery();
-                newCommand.Dispose();
+                    if (mDatabaseConnection.State != System.Data.ConnectionState.Open)
+                    {
+                        mDatabaseConnection.Open();
+                    }
+
+                    return newCommand.ExecuteNonQuery();
+                }
             }
             catch (Exception)
             {
-                return;
+                return -1;
             }
             finally
             {
@@ -427,27 +438,27 @@ namespace WcfDatabaseService
         /// This method deletes the given address if it isn't as foreign key in any other employee.
         /// </summary>
         /// <param name="The address to delete"></param>
-        public void DeleteAddress(Address a)
+        public int DeleteAddress(Address a)
         {
             try
             {
-                var newCommand = new SQLiteCommand(mDatabaseConnection);
-
-                newCommand.CommandText = "DELETE FROM Address WHERE Id=@Id";
-                newCommand.Parameters.AddWithValue("Id", a.Id.ToString());
-                newCommand.CommandType = System.Data.CommandType.Text;
-
-                if (mDatabaseConnection.State != System.Data.ConnectionState.Open)
+                using (var newCommand = new SQLiteCommand(mDatabaseConnection))
                 {
-                    mDatabaseConnection.Open();
-                }
+                    newCommand.CommandText = "DELETE FROM Address WHERE Id=@Id";
+                    newCommand.Parameters.AddWithValue("Id", a.Id.ToString());
+                    newCommand.CommandType = System.Data.CommandType.Text;
 
-                newCommand.ExecuteNonQuery();
-                newCommand.Dispose();
+                    if (mDatabaseConnection.State != System.Data.ConnectionState.Open)
+                    {
+                        mDatabaseConnection.Open();
+                    }
+
+                    return newCommand.ExecuteNonQuery();
+                }
             }
             catch (Exception)
             {
-                return;
+                return -1;
             }
             finally
             {
@@ -469,27 +480,29 @@ namespace WcfDatabaseService
             {
                 foreach (var address in e.Addresses)
                 {
-                    DeleteAddress(address); // delete all addresses before deleting the employee - otherwise foreign key exception
+                    if(DeleteAddress(address) == -1) // delete all addresses before deleting the employee - otherwise foreign key exception
+                    {
+                        return -1;
+                    }
                 }
 
-                var newCommand = new SQLiteCommand(mDatabaseConnection);
-
-                newCommand.CommandText = "DELETE FROM Employee WHERE Id=@Id";
-                newCommand.Parameters.AddWithValue("Id", e.Id.ToString());
-                newCommand.CommandType = System.Data.CommandType.Text;
-
-                if (mDatabaseConnection.State != System.Data.ConnectionState.Open)
+                using (var newCommand = new SQLiteCommand(mDatabaseConnection))
                 {
-                    mDatabaseConnection.Open();
-                }
+                    newCommand.CommandText = "DELETE FROM Employee WHERE Id=@Id";
+                    newCommand.Parameters.AddWithValue("Id", e.Id.ToString());
+                    newCommand.CommandType = System.Data.CommandType.Text;
 
-                var removedItems = newCommand.ExecuteNonQuery();
-                newCommand.Dispose();
-                return removedItems;
+                    if (mDatabaseConnection.State != System.Data.ConnectionState.Open)
+                    {
+                        mDatabaseConnection.Open();
+                    }
+
+                    return newCommand.ExecuteNonQuery();
+                }
             }
             catch (Exception)
             {
-                return 0;
+                return -1;
             }
             finally
             {

@@ -89,7 +89,16 @@ namespace HRManagement_ServiceApplication
                 mAddressToUpdate.Zip = zip;
                 mAddressToUpdate.EmployeeId = mEmployeeId;
 
-                serviceClient.UpdateAddress(mAddressToUpdate, mEmployeeId);
+                int retVal = serviceClient.UpdateAddress(mAddressToUpdate, mEmployeeId);
+                if (retVal == 0)
+                {
+                    MessageBox.Show("Die Änderungen konnten nicht übernommen werden. Bitte überprüfen Sie die angegebenen Daten.");
+                }
+                else if(retVal == -1)
+                {
+                    MessageBox.Show("Es besteht ein Problem mit der Datenbank. Bitte prüfen Sie diese und die Verbindung");
+                }
+
                 mCreatedAddressView.UpdateAddressesListView(mAddressToUpdate);
                 this.Close();
             }

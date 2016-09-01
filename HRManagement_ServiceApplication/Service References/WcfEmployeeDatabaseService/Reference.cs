@@ -279,11 +279,11 @@ namespace HRManagement_ServiceApplication.WcfEmployeeDatabaseService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/UpdateEmployeeAndAddresses", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/UpdateEmployeeAndAddressesResponse" +
             "")]
-        bool UpdateEmployeeAndAddresses(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee e);
+        int UpdateEmployeeAndAddresses(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee e);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/UpdateEmployeeAndAddresses", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/UpdateEmployeeAndAddressesResponse" +
             "")]
-        System.Threading.Tasks.Task<bool> UpdateEmployeeAndAddressesAsync(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee e);
+        System.Threading.Tasks.Task<int> UpdateEmployeeAndAddressesAsync(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee e);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/UpdateAddress", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/UpdateAddressResponse")]
         int UpdateAddress(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address a, System.Guid employeeId);
@@ -298,16 +298,16 @@ namespace HRManagement_ServiceApplication.WcfEmployeeDatabaseService {
         System.Threading.Tasks.Task<int> DeleteEmployeeAsync(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee e);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddress", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddressResponse")]
-        void DeleteAddress(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address a);
+        int DeleteAddress(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address a);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddress", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddressResponse")]
-        System.Threading.Tasks.Task DeleteAddressAsync(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address a);
+        System.Threading.Tasks.Task<int> DeleteAddressAsync(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address a);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddressesOfEmployee", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddressesOfEmployeeResponse")]
-        void DeleteAddressesOfEmployee(System.Guid employeeId);
+        int DeleteAddressesOfEmployee(System.Guid employeeId);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddressesOfEmployee", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddressesOfEmployeeResponse")]
-        System.Threading.Tasks.Task DeleteAddressesOfEmployeeAsync(System.Guid employeeId);
+        System.Threading.Tasks.Task<int> DeleteAddressesOfEmployeeAsync(System.Guid employeeId);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -369,11 +369,11 @@ namespace HRManagement_ServiceApplication.WcfEmployeeDatabaseService {
             return base.Channel.ReadAllAddressesAsync(e);
         }
         
-        public bool UpdateEmployeeAndAddresses(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee e) {
+        public int UpdateEmployeeAndAddresses(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee e) {
             return base.Channel.UpdateEmployeeAndAddresses(e);
         }
         
-        public System.Threading.Tasks.Task<bool> UpdateEmployeeAndAddressesAsync(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee e) {
+        public System.Threading.Tasks.Task<int> UpdateEmployeeAndAddressesAsync(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee e) {
             return base.Channel.UpdateEmployeeAndAddressesAsync(e);
         }
         
@@ -393,19 +393,19 @@ namespace HRManagement_ServiceApplication.WcfEmployeeDatabaseService {
             return base.Channel.DeleteEmployeeAsync(e);
         }
         
-        public void DeleteAddress(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address a) {
-            base.Channel.DeleteAddress(a);
+        public int DeleteAddress(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address a) {
+            return base.Channel.DeleteAddress(a);
         }
         
-        public System.Threading.Tasks.Task DeleteAddressAsync(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address a) {
+        public System.Threading.Tasks.Task<int> DeleteAddressAsync(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address a) {
             return base.Channel.DeleteAddressAsync(a);
         }
         
-        public void DeleteAddressesOfEmployee(System.Guid employeeId) {
-            base.Channel.DeleteAddressesOfEmployee(employeeId);
+        public int DeleteAddressesOfEmployee(System.Guid employeeId) {
+            return base.Channel.DeleteAddressesOfEmployee(employeeId);
         }
         
-        public System.Threading.Tasks.Task DeleteAddressesOfEmployeeAsync(System.Guid employeeId) {
+        public System.Threading.Tasks.Task<int> DeleteAddressesOfEmployeeAsync(System.Guid employeeId) {
             return base.Channel.DeleteAddressesOfEmployeeAsync(employeeId);
         }
     }
