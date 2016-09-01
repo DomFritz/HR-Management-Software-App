@@ -13,24 +13,30 @@ namespace WcfDatabaseService
     public interface IWcfEmployeeDatabaseService
     {
         [OperationContract]
-        int InsertEmployeeAndAddressIfNotAvailable(Employee e);
+        int InsertEmployeeAndAddresses(Employee e);
 
         [OperationContract]
-        int InsertAddress(Address a);
+        int InsertAddress(Address a, Guid employeeId);
 
         [OperationContract]
         ObservableCollection<Employee> ReadAllEmployees();
 
         [OperationContract]
-        ObservableCollection<Address> ReadAllAddresses();
+        ObservableCollection<Address> ReadAllAddresses(Employee e = null);
 
         [OperationContract]
-        bool UpdateEmployeeAndAddress(Employee e);
+        bool UpdateEmployeeAndAddresses(Employee e);
+
+        [OperationContract]
+        int UpdateAddress(Address a, Guid employeeId);
 
         [OperationContract]
         int DeleteEmployee(Employee e);
 
         [OperationContract]
-        void DeleteAddressWhenNotUsedByOtherEmployee(Address a);
+        void DeleteAddress(Address a);
+
+        [OperationContract]
+        void DeleteAddressesOfEmployee(Guid employeeId);
     }
 }

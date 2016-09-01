@@ -57,69 +57,9 @@ namespace WcfDatabaseService
             }
         }
 
-        // This method checks if the address is already available in the database.
-        private Address IsAddressAlreadyAvailable(Address a)
-        {
-            var alreadyAvailableAddress = ReadAllAddresses().FirstOrDefault(x => x.City.Equals(a.City) && x.State.Equals(a.State) && x.Street.Equals(a.Street) && x.Zip == a.Zip);
-            return alreadyAvailableAddress;
-        }
-
         #region database-inserts
         // Create a new employee in the database and the address for him. If this address is already existing, do not create a new one, use this.
-        public int InsertEmployeeAndAddressIfNotAvailable(Employee e)
-        {
-            // if no valid connection available
-            if(mDatabaseConnection == null)
-            {
-                return -1;
-            }
-
-            var alreadyAvailableAddress = IsAddressAlreadyAvailable(e.Addresses);
-            if (alreadyAvailableAddress != null)
-            {
-                e.Addresses = alreadyAvailableAddress;
-            }
-            else
-            {
-                InsertAddress(e.Addresses);
-            }
-
-            try
-            {
-                var databaseCommand = new SQLiteCommand(mDatabaseConnection);
-
-                databaseCommand.CommandText = "INSERT INTO Employee VALUES (@Id, @FirstName, @LastName, @Age, @MainAddressId)";
-                databaseCommand.Parameters.AddWithValue("Id", e.Id.ToString());
-                databaseCommand.Parameters.AddWithValue("FirstName", e.FirstName);
-                databaseCommand.Parameters.AddWithValue("LastName", e.LastName);
-                databaseCommand.Parameters.AddWithValue("Age", e.Age);
-                databaseCommand.Parameters.AddWithValue("MainAddressId", e.Addresses.Id.ToString());
-
-                databaseCommand.CommandType = System.Data.CommandType.Text;
-                if(mDatabaseConnection.State != System.Data.ConnectionState.Open)
-                {
-                    mDatabaseConnection.Open();
-                }
-
-                int retVal = databaseCommand.ExecuteNonQuery();
-                databaseCommand.Dispose();
-                return retVal;
-            }
-            catch(Exception)
-            {
-                return -1; // problem with database
-            }
-            finally
-            {
-                if(mDatabaseConnection != null)
-                {
-                    mDatabaseConnection.Close();
-                }
-            }
-        }
-
-        // This method will insert the address into the database if it isn't available at this time, otherwise nothing happens.
-        public int InsertAddress(Address a)
+        public int InsertEmployeeAndAddresses(Employee e)
         {
             // if no valid connection available
             if (mDatabaseConnection == null)
@@ -127,46 +67,88 @@ namespace WcfDatabaseService
                 return -1;
             }
 
-            var alreadyAvailableAddress = IsAddressAlreadyAvailable(a);
-            if (alreadyAvailableAddress != null)
+            try
             {
-                return 0; // the address is already available in the database
+                var databaseCommand = new SQLiteCommand(mDatabaseConnection);
+
+                databaseCommand.CommandText = "INSERT INTO Employee VALUES (@Id, @FirstName, @LastName, @Age)";
+                databaseCommand.Parameters.AddWithValue("Id", e.Id.ToString());
+                databaseCommand.Parameters.AddWithValue("FirstName", e.FirstName);
+                databaseCommand.Parameters.AddWithValue("LastName", e.LastName);
+                databaseCommand.Parameters.AddWithValue("Age", e.Age);
+
+                databaseCommand.CommandType = System.Data.CommandType.Text;
+                if (mDatabaseConnection.State != System.Data.ConnectionState.Open)
+                {
+                    mDatabaseConnection.Open();
+                }
+
+                int retVal = databaseCommand.ExecuteNonQuery();
+                databaseCommand.Dispose();
+
+                foreach (var address in e.Addresses)
+                {
+                    InsertAddress(address, e.Id);
+                }
+
+                return retVal;
             }
-            else
+            catch (Exception)
             {
-                try
+                return -1; // problem with database
+            }
+            finally
+            {
+                if (mDatabaseConnection != null)
                 {
-                    var newCommand = new SQLiteCommand(mDatabaseConnection);
-
-                    newCommand.CommandText = "INSERT INTO Address VALUES (@Id, @Street, @Zip, @City, @State)";
-                    newCommand.Parameters.AddWithValue("Id", a.Id.ToString());
-                    newCommand.Parameters.AddWithValue("Street", a.Street);
-                    newCommand.Parameters.AddWithValue("Zip", a.Zip);
-                    newCommand.Parameters.AddWithValue("City", a.City);
-                    newCommand.Parameters.AddWithValue("State", a.State);
-
-                    newCommand.CommandType = System.Data.CommandType.Text;
-                    if (mDatabaseConnection.State != System.Data.ConnectionState.Open)
-                    {
-                        mDatabaseConnection.Open();
-                    }
-
-                    int retVal = newCommand.ExecuteNonQuery();
-                    newCommand.Dispose();
-                    return retVal;
-                }
-                catch (Exception)
-                {
-                    return -1;
-                }
-                finally
-                {
-                    if (mDatabaseConnection != null)
-                    {
-                        mDatabaseConnection.Close();
-                    }
+                    mDatabaseConnection.Close();
                 }
             }
+        }
+
+        // This method will insert the address into the database if it isn't available at this time, otherwise nothing happens.
+        public int InsertAddress(Address a, Guid employeeId)
+        {
+            // if no valid connection available
+            if (mDatabaseConnection == null)
+            {
+                return -1;
+            }
+
+            try
+            {
+                var newCommand = new SQLiteCommand(mDatabaseConnection);
+
+                newCommand.CommandText = "INSERT INTO Address VALUES (@Id, @Street, @Zip, @City, @State, @EmployeeId)";
+                newCommand.Parameters.AddWithValue("Id", a.Id.ToString());
+                newCommand.Parameters.AddWithValue("Street", a.Street);
+                newCommand.Parameters.AddWithValue("Zip", a.Zip);
+                newCommand.Parameters.AddWithValue("City", a.City);
+                newCommand.Parameters.AddWithValue("State", a.State);
+                newCommand.Parameters.AddWithValue("EmployeeId", employeeId.ToString());
+
+                newCommand.CommandType = System.Data.CommandType.Text;
+                if (mDatabaseConnection.State != System.Data.ConnectionState.Open)
+                {
+                    mDatabaseConnection.Open();
+                }
+
+                int retVal = newCommand.ExecuteNonQuery();
+                newCommand.Dispose();
+                return retVal;
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
+            finally
+            {
+                if (mDatabaseConnection != null)
+                {
+                    mDatabaseConnection.Close();
+                }
+            }
+
         }
 
         #endregion
@@ -177,15 +159,25 @@ namespace WcfDatabaseService
         /// This method reads all addresses of the database and returns them.
         /// </summary>
         /// <returns>an collection of addresses</returns>
-        public ObservableCollection<Address> ReadAllAddresses()
+        public ObservableCollection<Address> ReadAllAddresses(Employee e = null)
         {
             ObservableCollection<Address> allAddresses = new ObservableCollection<Address>();
-
+            
             try
             {
                 var newCommand = new SQLiteCommand(mDatabaseConnection);
 
-                newCommand.CommandText = "SELECT * FROM Address";
+                // if employee is set, we only choose the addresses for the employee
+                if(e == null)
+                {
+                    newCommand.CommandText = "SELECT * FROM Address";
+                }
+                else
+                {
+                    newCommand.CommandText = "SELECT * FROM Address WHERE EmployeeId=@EmployeeId";
+                    newCommand.Parameters.AddWithValue("EmployeeId", e.Id.ToString());
+                }
+
                 newCommand.CommandType = System.Data.CommandType.Text;
                 if (mDatabaseConnection.State != System.Data.ConnectionState.Open)
                 {
@@ -205,6 +197,7 @@ namespace WcfDatabaseService
                     }
                     a.City = reader["City"].ToString();
                     a.State = reader["State"].ToString();
+                    a.EmployeeId = Guid.Parse(reader["EmployeeId"].ToString());
 
                     allAddresses.Add(a);
                 }
@@ -247,18 +240,18 @@ namespace WcfDatabaseService
                 }
 
                 var reader = employeeCommand.ExecuteReader();
-                while(reader.Read())
+                while (reader.Read())
                 {
                     Employee e = new Employee();
                     e.Id = Guid.Parse(reader["Id"].ToString());
                     e.FirstName = reader["FirstName"].ToString();
                     e.LastName = reader["LastName"].ToString();
                     int age = -1;
-                    if(Int32.TryParse(reader["Age"].ToString(), out age))
+                    if (Int32.TryParse(reader["Age"].ToString(), out age))
                     {
                         e.Age = age;
                     }
-                    e.Addresses = allAddresses.FirstOrDefault(x => x.Id.Equals(Guid.Parse(reader["MainAddressId"].ToString())));
+                    e.Addresses = allAddresses.Where(x => x.EmployeeId.Equals(e.Id)).ToList();
 
                     allEmployees.Add(e);
                 }
@@ -267,7 +260,7 @@ namespace WcfDatabaseService
                 employeeCommand.Dispose();
                 return allEmployees;
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return allEmployees; // return empty list if problems happen
             }
@@ -295,11 +288,10 @@ namespace WcfDatabaseService
             {
                 var newCommand = new SQLiteCommand(mDatabaseConnection);
 
-                newCommand.CommandText = "UPDATE Employee SET FirstName=@FirstName, LastName=@LastName, Age=@Age, MainAddressId=@MainAddressId WHERE Id=@Id";
+                newCommand.CommandText = "UPDATE Employee SET FirstName=@FirstName, LastName=@LastName, Age=@Age WHERE Id=@Id";
                 newCommand.Parameters.AddWithValue("FirstName", e.FirstName);
                 newCommand.Parameters.AddWithValue("LastName", e.LastName);
                 newCommand.Parameters.AddWithValue("Age", e.Age);
-                newCommand.Parameters.AddWithValue("MainAddressId", e.Addresses.Id.ToString());
                 newCommand.Parameters.AddWithValue("Id", e.Id.ToString());
                 newCommand.CommandType = System.Data.CommandType.Text;
 
@@ -330,17 +322,18 @@ namespace WcfDatabaseService
         /// </summary>
         /// <param name="The Address to update"></param>
         /// <returns>1 if a dataset was updated, 0 if nothing happened</returns>
-        private int UpdateAddress(Address a)
+        public int UpdateAddress(Address a, Guid employeeId)
         {
             try
             {
                 var newCommand = new SQLiteCommand(mDatabaseConnection);
 
-                newCommand.CommandText = "UPDATE Address SET Street=@Street, Zip=@Zip, City=@City, State=@State WHERE Id=@Id";
+                newCommand.CommandText = "UPDATE Address SET Street=@Street, Zip=@Zip, City=@City, State=@State, EmployeeId=@EmployeeId WHERE Id=@Id";
                 newCommand.Parameters.AddWithValue("Street", a.Street);
                 newCommand.Parameters.AddWithValue("Zip", a.Zip);
                 newCommand.Parameters.AddWithValue("City", a.City);
                 newCommand.Parameters.AddWithValue("State", a.State);
+                newCommand.Parameters.AddWithValue("EmployeeId", employeeId.ToString());
                 newCommand.Parameters.AddWithValue("Id", a.Id.ToString());
                 newCommand.CommandType = System.Data.CommandType.Text;
 
@@ -371,9 +364,21 @@ namespace WcfDatabaseService
         /// </summary>
         /// <param name="The Employee to update"></param>
         /// <returns>true if updated successfully, false if not</returns>
-        public bool UpdateEmployeeAndAddress(Employee e)
+        public bool UpdateEmployeeAndAddresses(Employee e)
         {
-            if (UpdateAddress(e.Addresses) == 0 || UpdateEmployee(e) == 0)
+            foreach (var address in e.Addresses)
+            {
+                if (ReadAllAddresses(e).Contains(address)) // check if there is already an address for this employee
+                {
+                    UpdateAddress(address, e.Id);
+                }
+                else
+                {
+                    InsertAddress(address, e.Id);
+                }
+            }
+
+            if (UpdateEmployee(e) == 0) // update the employee and check if it was successfull
             {
                 return false;
             }
@@ -387,18 +392,43 @@ namespace WcfDatabaseService
 
         #region deleting employees and addresses of the database.
 
+        public void DeleteAddressesOfEmployee(Guid employeeId)
+        {
+            try
+            {
+                var newCommand = new SQLiteCommand(mDatabaseConnection);
+
+                newCommand.CommandText = "DELETE FROM Address WHERE EmployeeId=@EmployeeId";
+                newCommand.Parameters.AddWithValue("EmployeeId", employeeId.ToString());
+                newCommand.CommandType = System.Data.CommandType.Text;
+
+                if (mDatabaseConnection.State != System.Data.ConnectionState.Open)
+                {
+                    mDatabaseConnection.Open();
+                }
+
+                newCommand.ExecuteNonQuery();
+                newCommand.Dispose();
+            }
+            catch (Exception)
+            {
+                return;
+            }
+            finally
+            {
+                if (mDatabaseConnection != null)
+                {
+                    mDatabaseConnection.Close();
+                }
+            }
+        }
+
         /// <summary>
         /// This method deletes the given address if it isn't as foreign key in any other employee.
         /// </summary>
         /// <param name="The address to delete"></param>
-        public void DeleteAddressWhenNotUsedByOtherEmployee(Address a)
+        public void DeleteAddress(Address a)
         {
-            var employees = ReadAllEmployees();
-            if(employees.Any(x => x.Addresses.Id.Equals(a.Id)))
-            {
-                return; // another employee has this address - because of the foreign key it can't be deleted
-            }
-
             try
             {
                 var newCommand = new SQLiteCommand(mDatabaseConnection);
@@ -437,6 +467,11 @@ namespace WcfDatabaseService
         {
             try
             {
+                foreach (var address in e.Addresses)
+                {
+                    DeleteAddress(address); // delete all addresses before deleting the employee - otherwise foreign key exception
+                }
+
                 var newCommand = new SQLiteCommand(mDatabaseConnection);
 
                 newCommand.CommandText = "DELETE FROM Employee WHERE Id=@Id";
@@ -448,7 +483,7 @@ namespace WcfDatabaseService
                     mDatabaseConnection.Open();
                 }
 
-                var removedItems =  newCommand.ExecuteNonQuery();
+                var removedItems = newCommand.ExecuteNonQuery();
                 newCommand.Dispose();
                 return removedItems;
             }

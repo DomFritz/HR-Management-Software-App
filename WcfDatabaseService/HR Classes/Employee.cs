@@ -24,6 +24,6 @@ namespace WcfDatabaseService
         public int Age { get; set; }
 
         [DataMember]
-        public Address Addresses { get; set; }
+        public List<Address> Addresses { get; set; }
     }
 }

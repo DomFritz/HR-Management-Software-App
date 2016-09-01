@@ -25,5 +25,8 @@ namespace WcfDatabaseService
 
         [DataMember]
         public string State { get; set; }
+
+        [DataMember]
+        public Guid EmployeeId { get; set; }
     }
 }
