@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HRManagement_ServiceApplication"
         mc:Ignorable="d"
-        Title="Mitarbeiter erstellen" Height="445.876" Width="462.22" ResizeMode="NoResize" Icon="Images/HRManagement.png">
+        Title="Mitarbeiter erstellen" Height="445" Width="462" ResizeMode="NoResize" Icon="Images/HRManagement.png">
     <Grid Margin="0,0,16,0" HorizontalAlignment="Right" Width="413">
         <Grid.RowDefinitions>
             <RowDefinition Height="62*"/>
@@ -25,15 +25,22 @@
         <TextBox x:Name="mTextBoxLastName" HorizontalAlignment="Left" Height="23" Margin="116,86,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="289" Grid.ColumnSpan="4"/>
         <Label x:Name="mLabelAge" Content="Alter" HorizontalAlignment="Left" Margin="10,123,0,0" VerticalAlignment="Top" Width="72"/>
         <TextBox x:Name="mTextBoxAge" HorizontalAlignment="Left" Height="23" Margin="116,123,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="66" Grid.ColumnSpan="2"/>
-        <Button x:Name="mButtonSaveClose" Content="Mitarbeiter hinzufügen" HorizontalAlignment="Right" Height="26" Margin="0,79,10,0" VerticalAlignment="Top" Width="153" Grid.Column="3" RenderTransformOrigin="-0.001,0.629" Grid.Row="1" Click="mButtonSaveAndClose_Click"/>
-        <GroupBox x:Name="mGroupBoxAddresse" Grid.ColumnSpan="4" Header="Addresse" HorizontalAlignment="Left" Height="179" Margin="8,165,0,0" VerticalAlignment="Top" Width="397" Grid.RowSpan="2"/>
-        <Label x:Name="mLabelStreet" Content="Straße" HorizontalAlignment="Left" Margin="27,189,0,0" VerticalAlignment="Top" Width="72"/>
-        <TextBox x:Name="mTextBoxStreet" HorizontalAlignment="Left" Height="23" Margin="116,189,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="272" Grid.ColumnSpan="4"/>
-        <Label x:Name="mLabelCity" Content="Ort" HorizontalAlignment="Left" Margin="27,227,0,0" VerticalAlignment="Top" Width="72" Grid.RowSpan="2"/>
-        <TextBox x:Name="mTextBoxCity" HorizontalAlignment="Left" Height="23" Margin="116,227,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="272" Grid.ColumnSpan="4" Grid.RowSpan="2"/>
-        <Label x:Name="mLabelZip" Content="PLZ" HorizontalAlignment="Left" Margin="27,266,0,0" VerticalAlignment="Top" Width="72" Grid.RowSpan="2"/>
-        <TextBox x:Name="mTextBoxZip" HorizontalAlignment="Left" Height="23" Margin="116,264,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="83" Grid.ColumnSpan="2" Grid.RowSpan="2"/>
-        <Label x:Name="mLabelZip_Copy" Content="Staat" HorizontalAlignment="Left" Margin="27,24,0,0" VerticalAlignment="Top" Width="72" Grid.Row="1"/>
-        <TextBox x:Name="mTextBoxState" HorizontalAlignment="Left" Height="23" Margin="116,24,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="272" Grid.ColumnSpan="4" Grid.Row="1"/>
+        <Button x:Name="mButtonSaveClose" Content="Mitarbeiter hinzufügen" HorizontalAlignment="Right" Height="26" Margin="0,97,8,0" VerticalAlignment="Top" Width="153" Grid.Column="3" RenderTransformOrigin="-0.001,0.629" Grid.Row="1" Click="mButtonSaveAndClose_Click"/>
+        <DataGrid x:Name="mAddressesView" HorizontalAlignment="Left" Margin="10,191,0,41" Grid.ColumnSpan="4" Width="395" SelectionMode="Single" SelectionUnit="FullRow" AutoGenerateColumns="False" Background="{x:Null}" Grid.RowSpan="2">
+            <DataGrid.Columns>
+                <DataGridTextColumn x:Name="mZipColumn" Header="Postleitzahl" Binding="{Binding Zip}" IsReadOnly="True"/>
+                <DataGridTextColumn x:Name="mStreetColumn" Header="Straße" Binding="{Binding Street}" IsReadOnly="True"/>
+                <DataGridTextColumn x:Name="mCityColumn" Header="Ort" Binding="{Binding City}" IsReadOnly="True"/>
+                <DataGridTextColumn x:Name="mStateColumn" Header="Staat" Binding="{Binding State}" IsReadOnly="True"/>
+            </DataGrid.Columns>
+            <DataGrid.RowStyle>
+                <Style TargetType="{x:Type DataGridRow}">
+                    <EventSetter Event="Control.MouseDoubleClick" Handler="mAddressesView_MouseDoubleClick"/>
+                    <EventSetter Event="UIElement.KeyDown" Handler="mAddressesView_KeyDownEvent"/>
+                </Style>
+            </DataGrid.RowStyle>
+        </DataGrid>
+        <Label x:Name="mAddressesLabel" Content="Adressen" HorizontalAlignment="Left" Margin="10,160,0,0" VerticalAlignment="Top" Width="72"/>
+        <Button x:Name="mButtonAddAddress" Content="Adresse hinzufügen" HorizontalAlignment="Right" Height="26" Margin="0,160,8,0" VerticalAlignment="Top" Width="124" Grid.Column="3" RenderTransformOrigin="-0.001,0.629" Click="mButtonAddAddress_Click"/>
     </Grid>
 </Window>

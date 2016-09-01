@@ -31,10 +31,27 @@ namespace HRManagement_ServiceApplication
                     writer.WriteElementString("Vorname", employee.FirstName);
                     writer.WriteElementString("Nachname", employee.LastName);
                     writer.WriteElementString("Alter", employee.Age.ToString());
-                    writer.WriteElementString("PLZ", employee.Addresses.Zip.ToString());
-                    writer.WriteElementString("Straße", employee.Addresses.Street);
-                    writer.WriteElementString("Ort", employee.Addresses.City);
-                    writer.WriteElementString("Staat", employee.Addresses.State);
+
+                    for(int addressCounter = 0; addressCounter < employee.Addresses.Count(); addressCounter++) // write all available addresses to the XML-file
+                    {
+                        if(employee.Addresses.Count() > 1)
+                        {
+                            writer.WriteStartElement(string.Format("Addresse_{0}", addressCounter + 1));
+                        }
+                        else
+                        {
+                            writer.WriteStartElement("Addresse");
+                        }
+
+                        var employeeAddresses = employee.Addresses;
+
+                        writer.WriteElementString("PLZ", employeeAddresses[addressCounter].Zip.ToString());
+                        writer.WriteElementString("Straße", employeeAddresses[addressCounter].Street);
+                        writer.WriteElementString("Ort", employeeAddresses[addressCounter].City);
+                        writer.WriteElementString("Staat", employeeAddresses[addressCounter].State);
+
+                        writer.WriteEndElement();
+                    }
 
                     writer.WriteEndElement();
                 }

@@ -133,12 +133,16 @@ namespace HRManagement_ServiceApplication
             {
                 WcfEmployeeDatabaseServiceClient client = new WcfEmployeeDatabaseServiceClient();
                 var employee = mEmployeeView.SelectedItem as Employee;
+
+                foreach (var address in employee.Addresses)
+                {
+                    client.DeleteAddress(address); // delete all addresses before deleting the employee
+                }
+
                 if (client.DeleteEmployee(employee) != 1)
                 {
                     MessageBox.Show("Der Mitarbeiter konnte nicht gelöscht werden.");
                 }
-
-                client.DeleteAddressWhenNotUsedByOtherEmployee(employee.Addresses);
                 this.UpdateEmployeeList();
             }
         }

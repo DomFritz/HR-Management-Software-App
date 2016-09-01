@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using HRManagement_ServiceApplication.WcfEmployeeDatabaseService;
+using System.Collections.ObjectModel;
 
 namespace HRManagement_ServiceApplication
 {
@@ -24,7 +25,7 @@ namespace HRManagement_ServiceApplication
     /// <summary>
     /// Interaction logic for Window1.xaml
     /// </summary>
-    public partial class CreateEmployee : Window
+    public partial class CreateEmployee : Window, ICreatedAddressesContent
     {
         private Guid mNewGuid;
         private IUpdateableEmployeeContent mUpdateableContent;
@@ -55,33 +56,31 @@ namespace HRManagement_ServiceApplication
                 mButtonSaveClose.Content = "Änderungen übernehmen";
                 Title = "Mitarbeiter bearbeiten";
 
+                // read the addresses for the employee
+                WcfEmployeeDatabaseServiceClient serviceClient = new WcfEmployeeDatabaseServiceClient();
+                var employeeAddresses = serviceClient.ReadAllAddresses(employeeToUpdate);
+                this.mAddressesView.DataContext = employeeAddresses;
+                foreach (var address in serviceClient.ReadAllAddresses(employeeToUpdate))
+                {
+                    mAddressesView.Items.Add(address);
+                }
+
                 mTextBoxID.Text = employeeToUpdate.Id.ToString();
                 mTextBoxAge.Text = employeeToUpdate.Age.ToString();
                 mTextBoxFirstName.Text = employeeToUpdate.FirstName;
                 mTextBoxLastName.Text = employeeToUpdate.LastName;
-                mTextBoxCity.Text = employeeToUpdate.Addresses.City;
-                mTextBoxState.Text = employeeToUpdate.Addresses.State;
-                mTextBoxZip.Text = employeeToUpdate.Addresses.Zip.ToString();
-                mTextBoxStreet.Text = employeeToUpdate.Addresses.Street;
             }
         }
 
         private void mButtonSaveAndClose_Click(object sender, RoutedEventArgs e)
         {
-            if(string.IsNullOrEmpty(mTextBoxAge.Text) || string.IsNullOrEmpty(mTextBoxLastName.Text) || string.IsNullOrEmpty(mTextBoxState.Text))
+            if (string.IsNullOrEmpty(mTextBoxAge.Text) || string.IsNullOrEmpty(mTextBoxLastName.Text))
             {
-                MessageBox.Show("Um einen Datensatz zu speichern, müssen mindestens die Felder Nachname, Alter und Staat ausgefüllt sein.");
+                MessageBox.Show("Um einen Datensatz zu speichern, müssen mindestens die Felder Nachname und Alter ausgefüllt sein.");
                 return;
             }
 
-            int zip = 0;
             int age = 0;
-            if(!Int32.TryParse(mTextBoxZip.Text, out zip))
-            {
-                MessageBox.Show("Das Feld PLZ hat keinen gültigen Wert.");
-                return;
-            }
-
             if (!Int32.TryParse(mTextBoxAge.Text, out age))
             {
                 MessageBox.Show("Das Feld Alter hat keinen gültigen Wert.");
@@ -92,14 +91,11 @@ namespace HRManagement_ServiceApplication
 
             if (mMode == DialogMode.Create)
             {
-                Address address = new Address()
+                List<Address> createdAddresses = new List<Address>();
+                foreach (Address address in mAddressesView.Items)
                 {
-                    Id = Guid.NewGuid(),
-                    State = mTextBoxState.Text,
-                    Street = mTextBoxStreet.Text,
-                    Zip = zip,
-                    City = mTextBoxCity.Text
-                };
+                    createdAddresses.Add(address);
+                }
 
                 Employee newCreatedEmployee = new Employee()
                 {
@@ -107,10 +103,10 @@ namespace HRManagement_ServiceApplication
                     FirstName = mTextBoxFirstName.Text,
                     LastName = mTextBoxLastName.Text,
                     Age = age,
-                    Addresses = address
+                    Addresses = createdAddresses.ToArray()
                 };
 
-                int retVal = serviceClient.InsertEmployeeAndAddressIfNotAvailable(newCreatedEmployee);
+                int retVal = serviceClient.InsertEmployeeAndAddresses(newCreatedEmployee);
                 if (retVal == 1)
                 {
                     MessageBox.Show("Der Mitarbeiter wurde erfolgreich hinzugefügt.");
@@ -128,15 +124,19 @@ namespace HRManagement_ServiceApplication
             }
             else
             {
+                List<Address> createdAddresses = new List<Address>();
+                foreach (Address address in mAddressesView.Items)
+                {
+                    createdAddresses.Add(address);
+                }
+
                 mEmployeeToUpdate.Age = age;
                 mEmployeeToUpdate.FirstName = mTextBoxFirstName.Text;
                 mEmployeeToUpdate.LastName = mTextBoxLastName.Text;
-                mEmployeeToUpdate.Addresses.City = mTextBoxCity.Text;
-                mEmployeeToUpdate.Addresses.State = mTextBoxState.Text;
-                mEmployeeToUpdate.Addresses.Zip = zip;
-                mEmployeeToUpdate.Addresses.Street = mTextBoxStreet.Text;
+                mEmployeeToUpdate.Addresses = createdAddresses.ToArray();
 
-                bool retVal = serviceClient.UpdateEmployeeAndAddress(mEmployeeToUpdate);
+                serviceClient.DeleteAddressesOfEmployee(mEmployeeToUpdate.Id); // delete all addresses before adding all created ones.
+                bool retVal = serviceClient.UpdateEmployeeAndAddresses(mEmployeeToUpdate);
                 if (retVal)
                 {
                     MessageBox.Show("Der Datensatz wurde erfolgreich aktualisiert.");
@@ -146,6 +146,70 @@ namespace HRManagement_ServiceApplication
                 {
                     MessageBox.Show("Es gab ein Problem beim Aktualisieren der Daten. Bitte prüfen Sie die eingegebenen Daten auf ihre Korrektheit.");
                 }
+            }
+        }
+
+        private void mButtonAddAddress_Click(object sender, RoutedEventArgs e)
+        {
+            new CreateAddress(DialogMode.Create, Guid.Parse(mTextBoxID.Text), this).Show();
+        }
+
+        public void UpdateAddressesListView(Address address)
+        {
+            if (!mAddressesView.Items.Contains(address))
+            {
+                mAddressesView.Items.Add(address);
+            }
+        }
+
+        private void mAddressesView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (sender != null)
+            {
+                DataGridRow dgr = sender as DataGridRow;
+                var address = dgr.Item as Address;
+
+                if (address != null)
+                {
+                    new CreateAddress(DialogMode.Update, Guid.Parse(mTextBoxID.Text), this, mAddressesView.SelectedItem != null ? mAddressesView.SelectedItem as Address : address).Show();
+                }
+            }
+        }
+
+        private void mAddressesView_KeyDownEvent(object sender, KeyEventArgs e) // delete the selected entry when ENTF-Key is pressed.
+        {
+            if (mAddressesView.SelectedItem == null)
+            {
+                return;
+            }
+
+            if (e.Key != Key.Delete)
+            {
+                return;
+            }
+            else
+            {
+                mButtonDeleteEmployee_Click(this, null);
+            }
+        }
+
+        private void mButtonDeleteEmployee_Click(object sender, RoutedEventArgs e)
+        {
+            if (mAddressesView.SelectedItem == null)
+            {
+                MessageBox.Show("Es wurde keine Addresse zum Löschen selektiert.");
+                return;
+            }
+
+            var result = MessageBox.Show("Wollen Sie den gewählten Datensatz wirklich löschen?", "Datensatz löschen", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result == MessageBoxResult.No)
+            {
+                return;
+            }
+            else
+            {
+                var address = mAddressesView.SelectedItem as Address;
+                mAddressesView.Items.Remove(address);
             }
         }
     }

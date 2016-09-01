@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HRManagement_ServiceApplication"
         mc:Ignorable="d"
-        Title="HR Management Software" Height="315.155" Width="771.077" ResizeMode="NoResize" Icon="Images/HRManagement.png">
+        Title="HR Management Software" Height="315" Width="771" ResizeMode="NoResize" Icon="Images/HRManagement.png">
     <Grid Margin="0,0,4,17">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="31*"/>
@@ -16,10 +16,10 @@
                 <DataGridTextColumn x:Name="mFirstNameColumn" Header="Vorname" Binding="{Binding Path=FirstName}" IsReadOnly="True"/>
                 <DataGridTextColumn x:Name="mLastNameColumn" Header="Nachname" Binding="{Binding Path=LastName}" IsReadOnly="True"/>
                 <DataGridTextColumn x:Name="mAgeColumn" Header="Alter" Binding="{Binding Path=Age}" IsReadOnly="True"/>
-                <DataGridTextColumn x:Name="mZipColumn" Header="Postleitzahl" Binding="{Binding Path=Addresses.Zip}" IsReadOnly="True"/>
-                <DataGridTextColumn x:Name="mStreetColumn" Header="Straße" Binding="{Binding Path=Addresses.Street}" IsReadOnly="True"/>
-                <DataGridTextColumn x:Name="mCityColumn" Header="Ort" Binding="{Binding Path=Addresses.City}" IsReadOnly="True"/>
-                <DataGridTextColumn x:Name="mStateColumn" Header="Staat" Binding="{Binding Path=Addresses.State}" IsReadOnly="True"/>
+                <DataGridTextColumn x:Name="mZipColumn" Header="Postleitzahl" Binding="{Binding Path=Addresses[0].Zip}" IsReadOnly="True"/>
+                <DataGridTextColumn x:Name="mStreetColumn" Header="Straße" Binding="{Binding Path=Addresses[0].Street}" IsReadOnly="True"/>
+                <DataGridTextColumn x:Name="mCityColumn" Header="Ort" Binding="{Binding Path=Addresses[0].City}" IsReadOnly="True"/>
+                <DataGridTextColumn x:Name="mStateColumn" Header="Staat" Binding="{Binding Path=Addresses[0].State}" IsReadOnly="True"/>
             </DataGrid.Columns>
             <DataGrid.RowStyle>
                 <Style TargetType="{x:Type DataGridRow}">
