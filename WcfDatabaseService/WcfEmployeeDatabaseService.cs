@@ -13,13 +13,25 @@ namespace WcfDatabaseService
     // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "IWcfEmployeeDatabaseService" in both code and config file together.
     public class WcfEmployeeDatabaseService : IWcfEmployeeDatabaseService
     {
-        private const string mApplicationName = "HR Management Service Application";
-
         private SQLiteConnection mDatabaseConnection = null;
 
         public WcfEmployeeDatabaseService()
         {
             ConnectToDatabase(); // when creating the service, connect to the database
+        }
+
+        public static string ApplicationName
+        {
+            get
+            {
+                return "";
+            }
+        }
+
+        // this method returns the application name - it should be only changed once if necessary
+        public string GetApplicationName()
+        {
+            return "HR Management Software";
         }
 
         // The method to connect to the database.
@@ -28,8 +40,8 @@ namespace WcfDatabaseService
         // If first start and no database available, the database will be created and  the table-creation script will be fired,
         private void ConnectToDatabase()
         {
-            string folderPathToDatabase = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), mApplicationName);
-            string database = Path.Combine(folderPathToDatabase, string.Format("{0}.{1}", "database", "sqlite"));
+            string folderPathToDatabase = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), GetApplicationName());
+            string database = Path.Combine(folderPathToDatabase, string.Format("{0}.sqlite", GetApplicationName()));
             var connectionString = string.Format(@"data source='{0}'", database);
 
             if (!Directory.Exists(folderPathToDatabase) || !File.Exists(database)) // if there exists no available database
@@ -90,7 +102,7 @@ namespace WcfDatabaseService
 
                 foreach (var address in e.Addresses)
                 {
-                    if(InsertAddress(address, e.Id) == -1)
+                    if (InsertAddress(address, e.Id) == -1)
                     {
                         return -1;
                     }
@@ -166,7 +178,7 @@ namespace WcfDatabaseService
         public ObservableCollection<Address> ReadAllAddresses(Employee e = null)
         {
             ObservableCollection<Address> allAddresses = new ObservableCollection<Address>();
-            
+
             try
             {
                 using (var newCommand = new SQLiteCommand(mDatabaseConnection))
@@ -375,7 +387,7 @@ namespace WcfDatabaseService
             {
                 if (ReadAllAddresses(e).Contains(address)) // check if there is already an address for this employee
                 {
-                    if (UpdateAddress(address, e.Id) == -1) 
+                    if (UpdateAddress(address, e.Id) == -1)
                     {
                         return -1;
                     }
@@ -480,7 +492,7 @@ namespace WcfDatabaseService
             {
                 foreach (var address in e.Addresses)
                 {
-                    if(DeleteAddress(address) == -1) // delete all addresses before deleting the employee - otherwise foreign key exception
+                    if (DeleteAddress(address) == -1) // delete all addresses before deleting the employee - otherwise foreign key exception
                     {
                         return -1;
                     }

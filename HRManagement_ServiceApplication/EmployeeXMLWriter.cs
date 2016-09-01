@@ -17,8 +17,10 @@ namespace HRManagement_ServiceApplication
         /// <param name="employees"></param>
         public static string WriteEmployeeXML(List<Employee> employees)
         {
-            var appDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "HR Management Service Application");
-            using (XmlWriter writer = XmlWriter.Create(Path.Combine(appDataPath, string.Format("{0}.{1}", "Alle Mitarbeiter", "xml"))))
+            var appDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), EmployeeOverviewWindow.ApplicationName);
+            string xmlFilePath = Path.Combine(appDataPath, "Alle Mitarbeiter.xml");
+
+            using (XmlWriter writer = XmlWriter.Create(xmlFilePath))
             {
                 writer.WriteStartDocument();
                 writer.WriteStartElement("Alle_Mitarbeiter");
@@ -32,9 +34,9 @@ namespace HRManagement_ServiceApplication
                     writer.WriteElementString("Nachname", employee.LastName);
                     writer.WriteElementString("Alter", employee.Age.ToString());
 
-                    for(int addressCounter = 0; addressCounter < employee.Addresses.Count(); addressCounter++) // write all available addresses to the XML-file
+                    for (int addressCounter = 0; addressCounter < employee.Addresses.Count(); addressCounter++) // write all available addresses to the XML-file
                     {
-                        if(employee.Addresses.Count() > 1)
+                        if (employee.Addresses.Count() > 1)
                         {
                             writer.WriteStartElement(string.Format("Addresse_{0}", addressCounter + 1));
                         }
@@ -60,7 +62,7 @@ namespace HRManagement_ServiceApplication
                 writer.WriteEndDocument();
             }
 
-            return Path.Combine(appDataPath, string.Format("{0}.{1}", "Alle Mitarbeiter", "xml"));
+            return xmlFilePath;
         }
     }
 }

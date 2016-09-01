@@ -38,5 +38,8 @@ namespace WcfDatabaseService
 
         [OperationContract]
         int DeleteAddressesOfEmployee(Guid employeeId);
+
+        [OperationContract]
+        string GetApplicationName();
     }
 }

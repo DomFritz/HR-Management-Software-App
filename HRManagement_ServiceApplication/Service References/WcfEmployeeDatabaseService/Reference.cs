@@ -308,6 +308,12 @@ namespace HRManagement_ServiceApplication.WcfEmployeeDatabaseService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddressesOfEmployee", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddressesOfEmployeeResponse")]
         System.Threading.Tasks.Task<int> DeleteAddressesOfEmployeeAsync(System.Guid employeeId);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/GetApplicationName", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/GetApplicationNameResponse")]
+        string GetApplicationName();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/GetApplicationName", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/GetApplicationNameResponse")]
+        System.Threading.Tasks.Task<string> GetApplicationNameAsync();
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -407,6 +413,14 @@ namespace HRManagement_ServiceApplication.WcfEmployeeDatabaseService {
         
         public System.Threading.Tasks.Task<int> DeleteAddressesOfEmployeeAsync(System.Guid employeeId) {
             return base.Channel.DeleteAddressesOfEmployeeAsync(employeeId);
+        }
+        
+        public string GetApplicationName() {
+            return base.Channel.GetApplicationName();
+        }
+        
+        public System.Threading.Tasks.Task<string> GetApplicationNameAsync() {
+            return base.Channel.GetApplicationNameAsync();
         }
     }
 }
