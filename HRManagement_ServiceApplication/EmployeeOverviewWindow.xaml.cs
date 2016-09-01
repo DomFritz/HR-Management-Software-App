@@ -20,18 +20,26 @@ namespace HRManagement_ServiceApplication
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, IUpdateableEmployeeContent
+    public partial class EmployeeOverviewWindow : Window, IUpdateableEmployeeContent
     {
         /// <summary>
         /// The main window of the application.
         /// </summary>
-        public MainWindow()
+        public EmployeeOverviewWindow()
         {
             InitializeComponent();
             SetPictureOfRefreshButton();
 
             UpdateEmployeeList();
             Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose; // shut down the application when the main window is closed.
+        }
+
+        internal static string ApplicationName
+        {
+            get
+            {
+                return new WcfEmployeeDatabaseServiceClient().GetApplicationName();
+            }
         }
 
         private void SetPictureOfRefreshButton()
@@ -161,7 +169,7 @@ namespace HRManagement_ServiceApplication
 
             string outputPath = EmployeeXMLWriter.WriteEmployeeXML(employees.ToList());
 
-            MessageBox.Show(string.Format("Die Datei wurde erfolgreich unter folgendem Pfad erstellt: {0}.", outputPath));
+            MessageBox.Show(string.Format("Die Mitarbeiter wurden unter folgendem Pfad exportiert: {0}.", outputPath));
         }
     }
 }
