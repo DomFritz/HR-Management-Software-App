@@ -1,17 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:import namespace="http://schemas.datacontract.org/2004/07/WcfDatabaseService" />
-  <xs:element name="InsertEmployeeAndAddressIfNotAvailable">
+  <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:element name="InsertEmployeeAndAddresses">
     <xs:complexType>
       <xs:sequence>
         <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/WcfDatabaseService" minOccurs="0" name="e" nillable="true" type="q1:Employee" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="InsertEmployeeAndAddressIfNotAvailableResponse">
+  <xs:element name="InsertEmployeeAndAddressesResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" name="InsertEmployeeAndAddressIfNotAvailableResult" type="xs:int" />
+        <xs:element minOccurs="0" name="InsertEmployeeAndAddressesResult" type="xs:int" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -19,6 +20,7 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/WcfDatabaseService" minOccurs="0" name="a" nillable="true" type="q2:Address" />
+        <xs:element xmlns:q3="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="employeeId" type="q3:guid" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -37,40 +39,57 @@
   <xs:element name="ReadAllEmployeesResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/WcfDatabaseService" minOccurs="0" name="ReadAllEmployeesResult" nillable="true" type="q3:ArrayOfEmployee" />
+        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/WcfDatabaseService" minOccurs="0" name="ReadAllEmployeesResult" nillable="true" type="q4:ArrayOfEmployee" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="ReadAllAddresses">
-    <xs:complexType>
-      <xs:sequence />
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="ReadAllAddressesResponse">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/WcfDatabaseService" minOccurs="0" name="ReadAllAddressesResult" nillable="true" type="q4:ArrayOfAddress" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="UpdateEmployeeAndAddress">
     <xs:complexType>
       <xs:sequence>
         <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/WcfDatabaseService" minOccurs="0" name="e" nillable="true" type="q5:Employee" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="UpdateEmployeeAndAddressResponse">
+  <xs:element name="ReadAllAddressesResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" name="UpdateEmployeeAndAddressResult" type="xs:boolean" />
+        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/WcfDatabaseService" minOccurs="0" name="ReadAllAddressesResult" nillable="true" type="q6:ArrayOfAddress" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateEmployeeAndAddresses">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/WcfDatabaseService" minOccurs="0" name="e" nillable="true" type="q7:Employee" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateEmployeeAndAddressesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="UpdateEmployeeAndAddressesResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateAddress">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/WcfDatabaseService" minOccurs="0" name="a" nillable="true" type="q8:Address" />
+        <xs:element xmlns:q9="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="employeeId" type="q9:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateAddressResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="UpdateAddressResult" type="xs:int" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="DeleteEmployee">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/WcfDatabaseService" minOccurs="0" name="e" nillable="true" type="q6:Employee" />
+        <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/WcfDatabaseService" minOccurs="0" name="e" nillable="true" type="q10:Employee" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -81,14 +100,26 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="DeleteAddressWhenNotUsedByOtherEmployee">
+  <xs:element name="DeleteAddress">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/WcfDatabaseService" minOccurs="0" name="a" nillable="true" type="q7:Address" />
+        <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/WcfDatabaseService" minOccurs="0" name="a" nillable="true" type="q11:Address" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="DeleteAddressWhenNotUsedByOtherEmployeeResponse">
+  <xs:element name="DeleteAddressResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeleteAddressesOfEmployee">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q12="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="employeeId" type="q12:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeleteAddressesOfEmployeeResponse">
     <xs:complexType>
       <xs:sequence />
     </xs:complexType>

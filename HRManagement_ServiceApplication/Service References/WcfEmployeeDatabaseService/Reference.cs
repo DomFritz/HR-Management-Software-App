@@ -23,7 +23,7 @@ namespace HRManagement_ServiceApplication.WcfEmployeeDatabaseService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address AddressesField;
+        private HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address[] AddressesField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private int AgeField;
@@ -48,7 +48,7 @@ namespace HRManagement_ServiceApplication.WcfEmployeeDatabaseService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address Addresses {
+        public HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address[] Addresses {
             get {
                 return this.AddressesField;
             }
@@ -135,6 +135,9 @@ namespace HRManagement_ServiceApplication.WcfEmployeeDatabaseService {
         private string CityField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid EmployeeIdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.Guid IdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -165,6 +168,19 @@ namespace HRManagement_ServiceApplication.WcfEmployeeDatabaseService {
                 if ((object.ReferenceEquals(this.CityField, value) != true)) {
                     this.CityField = value;
                     this.RaisePropertyChanged("City");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid EmployeeId {
+            get {
+                return this.EmployeeIdField;
+            }
+            set {
+                if ((this.EmployeeIdField.Equals(value) != true)) {
+                    this.EmployeeIdField = value;
+                    this.RaisePropertyChanged("EmployeeId");
                 }
             }
         }
@@ -235,21 +251,19 @@ namespace HRManagement_ServiceApplication.WcfEmployeeDatabaseService {
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="WcfEmployeeDatabaseService.IWcfEmployeeDatabaseService")]
     public interface IWcfEmployeeDatabaseService {
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/InsertEmployeeAndAddressIfNotAvail" +
-            "able", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/InsertEmployeeAndAddressIfNotAvail" +
-            "ableResponse")]
-        int InsertEmployeeAndAddressIfNotAvailable(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee e);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/InsertEmployeeAndAddresses", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/InsertEmployeeAndAddressesResponse" +
+            "")]
+        int InsertEmployeeAndAddresses(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee e);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/InsertEmployeeAndAddressIfNotAvail" +
-            "able", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/InsertEmployeeAndAddressIfNotAvail" +
-            "ableResponse")]
-        System.Threading.Tasks.Task<int> InsertEmployeeAndAddressIfNotAvailableAsync(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee e);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/InsertEmployeeAndAddresses", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/InsertEmployeeAndAddressesResponse" +
+            "")]
+        System.Threading.Tasks.Task<int> InsertEmployeeAndAddressesAsync(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee e);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/InsertAddress", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/InsertAddressResponse")]
-        int InsertAddress(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address a);
+        int InsertAddress(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address a, System.Guid employeeId);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/InsertAddress", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/InsertAddressResponse")]
-        System.Threading.Tasks.Task<int> InsertAddressAsync(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address a);
+        System.Threading.Tasks.Task<int> InsertAddressAsync(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address a, System.Guid employeeId);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/ReadAllEmployees", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/ReadAllEmployeesResponse")]
         HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee[] ReadAllEmployees();
@@ -258,16 +272,24 @@ namespace HRManagement_ServiceApplication.WcfEmployeeDatabaseService {
         System.Threading.Tasks.Task<HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee[]> ReadAllEmployeesAsync();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/ReadAllAddresses", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/ReadAllAddressesResponse")]
-        HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address[] ReadAllAddresses();
+        HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address[] ReadAllAddresses(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee e);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/ReadAllAddresses", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/ReadAllAddressesResponse")]
-        System.Threading.Tasks.Task<HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address[]> ReadAllAddressesAsync();
+        System.Threading.Tasks.Task<HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address[]> ReadAllAddressesAsync(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee e);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/UpdateEmployeeAndAddress", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/UpdateEmployeeAndAddressResponse")]
-        bool UpdateEmployeeAndAddress(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee e);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/UpdateEmployeeAndAddresses", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/UpdateEmployeeAndAddressesResponse" +
+            "")]
+        bool UpdateEmployeeAndAddresses(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee e);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/UpdateEmployeeAndAddress", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/UpdateEmployeeAndAddressResponse")]
-        System.Threading.Tasks.Task<bool> UpdateEmployeeAndAddressAsync(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee e);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/UpdateEmployeeAndAddresses", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/UpdateEmployeeAndAddressesResponse" +
+            "")]
+        System.Threading.Tasks.Task<bool> UpdateEmployeeAndAddressesAsync(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee e);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/UpdateAddress", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/UpdateAddressResponse")]
+        int UpdateAddress(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address a, System.Guid employeeId);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/UpdateAddress", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/UpdateAddressResponse")]
+        System.Threading.Tasks.Task<int> UpdateAddressAsync(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address a, System.Guid employeeId);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteEmployee", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteEmployeeResponse")]
         int DeleteEmployee(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee e);
@@ -275,15 +297,17 @@ namespace HRManagement_ServiceApplication.WcfEmployeeDatabaseService {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteEmployee", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteEmployeeResponse")]
         System.Threading.Tasks.Task<int> DeleteEmployeeAsync(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee e);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddressWhenNotUsedByOtherEmp" +
-            "loyee", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddressWhenNotUsedByOtherEmp" +
-            "loyeeResponse")]
-        void DeleteAddressWhenNotUsedByOtherEmployee(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address a);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddress", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddressResponse")]
+        void DeleteAddress(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address a);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddressWhenNotUsedByOtherEmp" +
-            "loyee", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddressWhenNotUsedByOtherEmp" +
-            "loyeeResponse")]
-        System.Threading.Tasks.Task DeleteAddressWhenNotUsedByOtherEmployeeAsync(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address a);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddress", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddressResponse")]
+        System.Threading.Tasks.Task DeleteAddressAsync(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address a);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddressesOfEmployee", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddressesOfEmployeeResponse")]
+        void DeleteAddressesOfEmployee(System.Guid employeeId);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddressesOfEmployee", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddressesOfEmployeeResponse")]
+        System.Threading.Tasks.Task DeleteAddressesOfEmployeeAsync(System.Guid employeeId);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -313,20 +337,20 @@ namespace HRManagement_ServiceApplication.WcfEmployeeDatabaseService {
                 base(binding, remoteAddress) {
         }
         
-        public int InsertEmployeeAndAddressIfNotAvailable(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee e) {
-            return base.Channel.InsertEmployeeAndAddressIfNotAvailable(e);
+        public int InsertEmployeeAndAddresses(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee e) {
+            return base.Channel.InsertEmployeeAndAddresses(e);
         }
         
-        public System.Threading.Tasks.Task<int> InsertEmployeeAndAddressIfNotAvailableAsync(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee e) {
-            return base.Channel.InsertEmployeeAndAddressIfNotAvailableAsync(e);
+        public System.Threading.Tasks.Task<int> InsertEmployeeAndAddressesAsync(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee e) {
+            return base.Channel.InsertEmployeeAndAddressesAsync(e);
         }
         
-        public int InsertAddress(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address a) {
-            return base.Channel.InsertAddress(a);
+        public int InsertAddress(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address a, System.Guid employeeId) {
+            return base.Channel.InsertAddress(a, employeeId);
         }
         
-        public System.Threading.Tasks.Task<int> InsertAddressAsync(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address a) {
-            return base.Channel.InsertAddressAsync(a);
+        public System.Threading.Tasks.Task<int> InsertAddressAsync(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address a, System.Guid employeeId) {
+            return base.Channel.InsertAddressAsync(a, employeeId);
         }
         
         public HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee[] ReadAllEmployees() {
@@ -337,20 +361,28 @@ namespace HRManagement_ServiceApplication.WcfEmployeeDatabaseService {
             return base.Channel.ReadAllEmployeesAsync();
         }
         
-        public HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address[] ReadAllAddresses() {
-            return base.Channel.ReadAllAddresses();
+        public HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address[] ReadAllAddresses(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee e) {
+            return base.Channel.ReadAllAddresses(e);
         }
         
-        public System.Threading.Tasks.Task<HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address[]> ReadAllAddressesAsync() {
-            return base.Channel.ReadAllAddressesAsync();
+        public System.Threading.Tasks.Task<HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address[]> ReadAllAddressesAsync(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee e) {
+            return base.Channel.ReadAllAddressesAsync(e);
         }
         
-        public bool UpdateEmployeeAndAddress(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee e) {
-            return base.Channel.UpdateEmployeeAndAddress(e);
+        public bool UpdateEmployeeAndAddresses(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee e) {
+            return base.Channel.UpdateEmployeeAndAddresses(e);
         }
         
-        public System.Threading.Tasks.Task<bool> UpdateEmployeeAndAddressAsync(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee e) {
-            return base.Channel.UpdateEmployeeAndAddressAsync(e);
+        public System.Threading.Tasks.Task<bool> UpdateEmployeeAndAddressesAsync(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee e) {
+            return base.Channel.UpdateEmployeeAndAddressesAsync(e);
+        }
+        
+        public int UpdateAddress(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address a, System.Guid employeeId) {
+            return base.Channel.UpdateAddress(a, employeeId);
+        }
+        
+        public System.Threading.Tasks.Task<int> UpdateAddressAsync(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address a, System.Guid employeeId) {
+            return base.Channel.UpdateAddressAsync(a, employeeId);
         }
         
         public int DeleteEmployee(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee e) {
@@ -361,12 +393,20 @@ namespace HRManagement_ServiceApplication.WcfEmployeeDatabaseService {
             return base.Channel.DeleteEmployeeAsync(e);
         }
         
-        public void DeleteAddressWhenNotUsedByOtherEmployee(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address a) {
-            base.Channel.DeleteAddressWhenNotUsedByOtherEmployee(a);
+        public void DeleteAddress(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address a) {
+            base.Channel.DeleteAddress(a);
         }
         
-        public System.Threading.Tasks.Task DeleteAddressWhenNotUsedByOtherEmployeeAsync(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address a) {
-            return base.Channel.DeleteAddressWhenNotUsedByOtherEmployeeAsync(a);
+        public System.Threading.Tasks.Task DeleteAddressAsync(HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address a) {
+            return base.Channel.DeleteAddressAsync(a);
+        }
+        
+        public void DeleteAddressesOfEmployee(System.Guid employeeId) {
+            base.Channel.DeleteAddressesOfEmployee(employeeId);
+        }
+        
+        public System.Threading.Tasks.Task DeleteAddressesOfEmployeeAsync(System.Guid employeeId) {
+            return base.Channel.DeleteAddressesOfEmployeeAsync(employeeId);
         }
     }
 }

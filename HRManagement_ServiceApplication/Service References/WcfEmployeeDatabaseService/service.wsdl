@@ -7,11 +7,11 @@
       <xsd:import namespace="http://schemas.datacontract.org/2004/07/WcfDatabaseService" />
     </xsd:schema>
   </wsdl:types>
-  <wsdl:message name="IWcfEmployeeDatabaseService_InsertEmployeeAndAddressIfNotAvailable_InputMessage">
-    <wsdl:part name="parameters" element="tns:InsertEmployeeAndAddressIfNotAvailable" />
+  <wsdl:message name="IWcfEmployeeDatabaseService_InsertEmployeeAndAddresses_InputMessage">
+    <wsdl:part name="parameters" element="tns:InsertEmployeeAndAddresses" />
   </wsdl:message>
-  <wsdl:message name="IWcfEmployeeDatabaseService_InsertEmployeeAndAddressIfNotAvailable_OutputMessage">
-    <wsdl:part name="parameters" element="tns:InsertEmployeeAndAddressIfNotAvailableResponse" />
+  <wsdl:message name="IWcfEmployeeDatabaseService_InsertEmployeeAndAddresses_OutputMessage">
+    <wsdl:part name="parameters" element="tns:InsertEmployeeAndAddressesResponse" />
   </wsdl:message>
   <wsdl:message name="IWcfEmployeeDatabaseService_InsertAddress_InputMessage">
     <wsdl:part name="parameters" element="tns:InsertAddress" />
@@ -31,11 +31,17 @@
   <wsdl:message name="IWcfEmployeeDatabaseService_ReadAllAddresses_OutputMessage">
     <wsdl:part name="parameters" element="tns:ReadAllAddressesResponse" />
   </wsdl:message>
-  <wsdl:message name="IWcfEmployeeDatabaseService_UpdateEmployeeAndAddress_InputMessage">
-    <wsdl:part name="parameters" element="tns:UpdateEmployeeAndAddress" />
+  <wsdl:message name="IWcfEmployeeDatabaseService_UpdateEmployeeAndAddresses_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateEmployeeAndAddresses" />
   </wsdl:message>
-  <wsdl:message name="IWcfEmployeeDatabaseService_UpdateEmployeeAndAddress_OutputMessage">
-    <wsdl:part name="parameters" element="tns:UpdateEmployeeAndAddressResponse" />
+  <wsdl:message name="IWcfEmployeeDatabaseService_UpdateEmployeeAndAddresses_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateEmployeeAndAddressesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWcfEmployeeDatabaseService_UpdateAddress_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateAddress" />
+  </wsdl:message>
+  <wsdl:message name="IWcfEmployeeDatabaseService_UpdateAddress_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateAddressResponse" />
   </wsdl:message>
   <wsdl:message name="IWcfEmployeeDatabaseService_DeleteEmployee_InputMessage">
     <wsdl:part name="parameters" element="tns:DeleteEmployee" />
@@ -43,16 +49,22 @@
   <wsdl:message name="IWcfEmployeeDatabaseService_DeleteEmployee_OutputMessage">
     <wsdl:part name="parameters" element="tns:DeleteEmployeeResponse" />
   </wsdl:message>
-  <wsdl:message name="IWcfEmployeeDatabaseService_DeleteAddressWhenNotUsedByOtherEmployee_InputMessage">
-    <wsdl:part name="parameters" element="tns:DeleteAddressWhenNotUsedByOtherEmployee" />
+  <wsdl:message name="IWcfEmployeeDatabaseService_DeleteAddress_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteAddress" />
   </wsdl:message>
-  <wsdl:message name="IWcfEmployeeDatabaseService_DeleteAddressWhenNotUsedByOtherEmployee_OutputMessage">
-    <wsdl:part name="parameters" element="tns:DeleteAddressWhenNotUsedByOtherEmployeeResponse" />
+  <wsdl:message name="IWcfEmployeeDatabaseService_DeleteAddress_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteAddressResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWcfEmployeeDatabaseService_DeleteAddressesOfEmployee_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteAddressesOfEmployee" />
+  </wsdl:message>
+  <wsdl:message name="IWcfEmployeeDatabaseService_DeleteAddressesOfEmployee_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteAddressesOfEmployeeResponse" />
   </wsdl:message>
   <wsdl:portType name="IWcfEmployeeDatabaseService">
-    <wsdl:operation name="InsertEmployeeAndAddressIfNotAvailable">
-      <wsdl:input wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/InsertEmployeeAndAddressIfNotAvailable" message="tns:IWcfEmployeeDatabaseService_InsertEmployeeAndAddressIfNotAvailable_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/InsertEmployeeAndAddressIfNotAvailableResponse" message="tns:IWcfEmployeeDatabaseService_InsertEmployeeAndAddressIfNotAvailable_OutputMessage" />
+    <wsdl:operation name="InsertEmployeeAndAddresses">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/InsertEmployeeAndAddresses" message="tns:IWcfEmployeeDatabaseService_InsertEmployeeAndAddresses_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/InsertEmployeeAndAddressesResponse" message="tns:IWcfEmployeeDatabaseService_InsertEmployeeAndAddresses_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="InsertAddress">
       <wsdl:input wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/InsertAddress" message="tns:IWcfEmployeeDatabaseService_InsertAddress_InputMessage" />
@@ -66,23 +78,31 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/ReadAllAddresses" message="tns:IWcfEmployeeDatabaseService_ReadAllAddresses_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/ReadAllAddressesResponse" message="tns:IWcfEmployeeDatabaseService_ReadAllAddresses_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="UpdateEmployeeAndAddress">
-      <wsdl:input wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/UpdateEmployeeAndAddress" message="tns:IWcfEmployeeDatabaseService_UpdateEmployeeAndAddress_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/UpdateEmployeeAndAddressResponse" message="tns:IWcfEmployeeDatabaseService_UpdateEmployeeAndAddress_OutputMessage" />
+    <wsdl:operation name="UpdateEmployeeAndAddresses">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/UpdateEmployeeAndAddresses" message="tns:IWcfEmployeeDatabaseService_UpdateEmployeeAndAddresses_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/UpdateEmployeeAndAddressesResponse" message="tns:IWcfEmployeeDatabaseService_UpdateEmployeeAndAddresses_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateAddress">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/UpdateAddress" message="tns:IWcfEmployeeDatabaseService_UpdateAddress_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/UpdateAddressResponse" message="tns:IWcfEmployeeDatabaseService_UpdateAddress_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="DeleteEmployee">
       <wsdl:input wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteEmployee" message="tns:IWcfEmployeeDatabaseService_DeleteEmployee_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteEmployeeResponse" message="tns:IWcfEmployeeDatabaseService_DeleteEmployee_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="DeleteAddressWhenNotUsedByOtherEmployee">
-      <wsdl:input wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddressWhenNotUsedByOtherEmployee" message="tns:IWcfEmployeeDatabaseService_DeleteAddressWhenNotUsedByOtherEmployee_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddressWhenNotUsedByOtherEmployeeResponse" message="tns:IWcfEmployeeDatabaseService_DeleteAddressWhenNotUsedByOtherEmployee_OutputMessage" />
+    <wsdl:operation name="DeleteAddress">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddress" message="tns:IWcfEmployeeDatabaseService_DeleteAddress_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddressResponse" message="tns:IWcfEmployeeDatabaseService_DeleteAddress_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteAddressesOfEmployee">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddressesOfEmployee" message="tns:IWcfEmployeeDatabaseService_DeleteAddressesOfEmployee_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddressesOfEmployeeResponse" message="tns:IWcfEmployeeDatabaseService_DeleteAddressesOfEmployee_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="BasicHttpBinding_IWcfEmployeeDatabaseService" type="tns:IWcfEmployeeDatabaseService">
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
-    <wsdl:operation name="InsertEmployeeAndAddressIfNotAvailable">
-      <soap:operation soapAction="http://tempuri.org/IWcfEmployeeDatabaseService/InsertEmployeeAndAddressIfNotAvailable" style="document" />
+    <wsdl:operation name="InsertEmployeeAndAddresses">
+      <soap:operation soapAction="http://tempuri.org/IWcfEmployeeDatabaseService/InsertEmployeeAndAddresses" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -117,8 +137,17 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="UpdateEmployeeAndAddress">
-      <soap:operation soapAction="http://tempuri.org/IWcfEmployeeDatabaseService/UpdateEmployeeAndAddress" style="document" />
+    <wsdl:operation name="UpdateEmployeeAndAddresses">
+      <soap:operation soapAction="http://tempuri.org/IWcfEmployeeDatabaseService/UpdateEmployeeAndAddresses" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateAddress">
+      <soap:operation soapAction="http://tempuri.org/IWcfEmployeeDatabaseService/UpdateAddress" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -135,8 +164,17 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="DeleteAddressWhenNotUsedByOtherEmployee">
-      <soap:operation soapAction="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddressWhenNotUsedByOtherEmployee" style="document" />
+    <wsdl:operation name="DeleteAddress">
+      <soap:operation soapAction="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddress" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteAddressesOfEmployee">
+      <soap:operation soapAction="http://tempuri.org/IWcfEmployeeDatabaseService/DeleteAddressesOfEmployee" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
