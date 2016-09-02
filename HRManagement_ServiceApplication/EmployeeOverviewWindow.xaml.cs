@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace HRManagement_ServiceApplication
 {
@@ -22,16 +23,24 @@ namespace HRManagement_ServiceApplication
     /// </summary>
     public partial class EmployeeOverviewWindow : Window, IUpdateableEmployeeContent
     {
+        private DispatcherTimer mCheckDatabaseDispatcherTimer = new DispatcherTimer();
+        private WcfEmployeeDatabaseServiceClient mCheckDatabaseConnectionService = null;
+
         /// <summary>
         /// The main window of the application.
         /// </summary>
         public EmployeeOverviewWindow()
         {
             InitializeComponent();
+            CheckDatabaseConnection();
             SetPictureOfRefreshButton();
 
             UpdateEmployeeList();
             Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose; // shut down the application when the main window is closed.
+
+            mCheckDatabaseDispatcherTimer.Tick += new EventHandler(DispatcherTimer_Tick);
+            mCheckDatabaseDispatcherTimer.Interval = new TimeSpan(0, 0, 5);
+            mCheckDatabaseDispatcherTimer.Start(); // check every 5 seconds if the database is available and can be connected
         }
 
         internal static string ApplicationName
@@ -132,7 +141,7 @@ namespace HRManagement_ServiceApplication
                 return;
             }
 
-            var result = MessageBox.Show("Wollen Sie den gewählten Datensatz und die dazugehörige Adresse (falls diese bei keinem anderen Mitarbeiter eingetragen ist) wirklich löschen?", string.Empty, MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var result = MessageBox.Show("Wollen Sie den gewählten Datensatz und die dazugehörige(n) Adresse(n) wirklich löschen?", string.Empty, MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result == MessageBoxResult.No)
             {
                 return;
@@ -169,7 +178,31 @@ namespace HRManagement_ServiceApplication
 
             string outputPath = EmployeeXMLWriter.WriteEmployeeXML(employees.ToList());
 
-            MessageBox.Show(string.Format("Die Mitarbeiter wurden unter folgendem Pfad exportiert: {0}.", outputPath));
+            MessageBox.Show(string.Format("Die Mitarbeiter wurden unter folgendem Pfad exportiert: '{0}'.", outputPath));
+        }
+
+        private void CheckDatabaseConnection()
+        {
+            if(mCheckDatabaseConnectionService == null)
+            {
+                mCheckDatabaseConnectionService = new WcfEmployeeDatabaseServiceClient();
+            }
+
+            if (mCheckDatabaseConnectionService.CheckDatabaseAvailability())
+            {
+                mCheckDatabaseCheckbox.IsChecked = false;
+                mCheckDatabaseCheckbox.Content = "Die Verbindung zur Datenbank wurde erfolgreich aufgebaut.";
+            }
+            else
+            {
+                mCheckDatabaseCheckbox.IsChecked = true;
+                mCheckDatabaseCheckbox.Content = "Es kann keine Verbindung zur Datenbank aufgebaut werden.";
+            }
+        }
+
+        private void DispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            CheckDatabaseConnection();
         }
     }
 }

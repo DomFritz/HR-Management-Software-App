@@ -140,4 +140,16 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="CheckDatabaseAvailability">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CheckDatabaseAvailabilityResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="CheckDatabaseAvailabilityResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
 </xs:schema>

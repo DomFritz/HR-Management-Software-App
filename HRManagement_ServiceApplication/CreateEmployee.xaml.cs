@@ -160,6 +160,11 @@ namespace HRManagement_ServiceApplication
             {
                 mAddressesView.Items.Add(address);
             }
+            else
+            {
+                mAddressesView.Items.Remove(address);
+                mAddressesView.Items.Add(address);
+            }
         }
 
         private void mAddressesView_MouseDoubleClick(object sender, MouseButtonEventArgs e)

@@ -17,15 +17,7 @@ namespace WcfDatabaseService
 
         public WcfEmployeeDatabaseService()
         {
-            ConnectToDatabase(); // when creating the service, connect to the database
-        }
-
-        public static string ApplicationName
-        {
-            get
-            {
-                return "";
-            }
+            ConnectToDatabase();
         }
 
         // this method returns the application name - it should be only changed once if necessary
@@ -40,6 +32,11 @@ namespace WcfDatabaseService
         // If first start and no database available, the database will be created and  the table-creation script will be fired,
         private void ConnectToDatabase()
         {
+            if(mDatabaseConnection != null)
+            {
+                return; // connection already exists
+            }
+
             string folderPathToDatabase = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), GetApplicationName());
             string database = Path.Combine(folderPathToDatabase, string.Format("{0}.sqlite", GetApplicationName()));
             var connectionString = string.Format(@"data source='{0}'", database);
@@ -526,5 +523,35 @@ namespace WcfDatabaseService
         }
 
         #endregion
+
+        private string GetDatabaseConnectionName()
+        {
+            string folderPathToDatabase = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), GetApplicationName());
+            return Path.Combine(folderPathToDatabase, string.Format("{0}.sqlite", GetApplicationName()));
+        }
+
+        public bool CheckDatabaseAvailability()
+        {
+            var database = GetDatabaseConnectionName();
+
+            if (!File.Exists(database))
+            {
+                return false;
+            }
+
+
+            var connectionString = string.Format(@"data source='{0}'", database);
+            using (var databaseConnection = new SQLiteConnection(connectionString))
+            {
+                databaseConnection.Open();
+
+                if (databaseConnection.State != System.Data.ConnectionState.Open)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
     }
 }

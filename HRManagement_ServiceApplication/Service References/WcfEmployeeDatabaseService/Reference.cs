@@ -314,6 +314,12 @@ namespace HRManagement_ServiceApplication.WcfEmployeeDatabaseService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/GetApplicationName", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/GetApplicationNameResponse")]
         System.Threading.Tasks.Task<string> GetApplicationNameAsync();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/CheckDatabaseAvailability", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/CheckDatabaseAvailabilityResponse")]
+        bool CheckDatabaseAvailability();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfEmployeeDatabaseService/CheckDatabaseAvailability", ReplyAction="http://tempuri.org/IWcfEmployeeDatabaseService/CheckDatabaseAvailabilityResponse")]
+        System.Threading.Tasks.Task<bool> CheckDatabaseAvailabilityAsync();
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -421,6 +427,14 @@ namespace HRManagement_ServiceApplication.WcfEmployeeDatabaseService {
         
         public System.Threading.Tasks.Task<string> GetApplicationNameAsync() {
             return base.Channel.GetApplicationNameAsync();
+        }
+        
+        public bool CheckDatabaseAvailability() {
+            return base.Channel.CheckDatabaseAvailability();
+        }
+        
+        public System.Threading.Tasks.Task<bool> CheckDatabaseAvailabilityAsync() {
+            return base.Channel.CheckDatabaseAvailabilityAsync();
         }
     }
 }

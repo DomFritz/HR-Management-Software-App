@@ -5,13 +5,41 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HRManagement_ServiceApplication"
         mc:Ignorable="d"
-        Title="HR Management Software" Height="315" Width="771" ResizeMode="NoResize" Icon="Images/HRManagement.png">
-    <Grid Margin="0,0,4,17">
+        Title="HR Management Software" Height="324.493" Width="771" ResizeMode="NoResize" Icon="Images/HRManagement.png">
+    <Window.Resources>
+        <SolidColorBrush x:Key="Red" Color="Red" />
+        <SolidColorBrush x:Key="Green" Color="Green" />
+
+        <Style x:Key="{x:Type CheckBox}" TargetType="CheckBox">
+            <Setter Property="SnapsToDevicePixels" Value="true"/>
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <BulletDecorator Background="Transparent">
+                            <BulletDecorator.Bullet>
+                                <Border x:Name="Border" Width="13" Height="13" Background="{StaticResource Red}" BorderThickness="1" BorderBrush="Black">
+                                </Border>
+                            </BulletDecorator.Bullet>
+                            <ContentPresenter Margin="4,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" RecognizesAccessKey="True"/>
+                        </BulletDecorator>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="false">
+                                <Setter TargetName="Border" Property="Background" Value="{StaticResource Green}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid Margin="0,0,-6,-4">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="31*"/>
             <ColumnDefinition Width="99*"/>
         </Grid.ColumnDefinitions>
-        <DataGrid x:Name="mEmployeeView" HorizontalAlignment="Left" Margin="10,32,0,38" Grid.ColumnSpan="2" Width="732" SelectionMode="Single" SelectionUnit="FullRow" AutoGenerateColumns="False" Background="{x:Null}">
+        <DataGrid x:Name="mEmployeeView" HorizontalAlignment="Left" Margin="10,32,0,73" Grid.ColumnSpan="2" Width="732" SelectionMode="Single" SelectionUnit="FullRow" AutoGenerateColumns="False" Background="{x:Null}">
             <DataGrid.Columns>
                 <DataGridTextColumn x:Name="mFirstNameColumn" Header="Vorname" Binding="{Binding Path=FirstName}" IsReadOnly="True"/>
                 <DataGridTextColumn x:Name="mLastNameColumn" Header="Nachname" Binding="{Binding Path=LastName}" IsReadOnly="True"/>
@@ -29,10 +57,12 @@
             </DataGrid.RowStyle>
         </DataGrid>
         <Label x:Name="label" Content="Mitarbeiter" HorizontalAlignment="Left" Height="27" Margin="3,0,0,0" VerticalAlignment="Top" Width="168"/>
-        <Button x:Name="mRefreshButton" Grid.Column="1" HorizontalAlignment="Left" Height="27" Margin="532,0,0,0" VerticalAlignment="Top" Width="29" RenderTransformOrigin="-0.103,0.148" Click="mRefreshButton_Click" />
-        <Button x:Name="mButtonNewEmployee" Content="Neuer Mitarbeiter" HorizontalAlignment="Left" Height="21" Margin="10,236,0,0" VerticalAlignment="Top" Width="126" Click="mButtonNewEmployee_Click"/>
-        <Button x:Name="mButtonEditEmployee" Content="Mitarbeiter bearbeiten" HorizontalAlignment="Left" Height="21" Margin="136,236,0,0" VerticalAlignment="Top" Width="132" Grid.Column="1" Click="mButtonEditEmployee_Click"/>
-        <Button x:Name="mButtonDeleteEmployee" Content="Mitarbeiter löschen" HorizontalAlignment="Left" Height="21" Margin="442,236,0,0" VerticalAlignment="Top" Width="119" Grid.Column="1" Click="mButtonDeleteEmployee_Click"/>
+        <Button x:Name="mRefreshButton" Grid.Column="1" HorizontalAlignment="Left" Height="27" Margin="529,0,0,0" VerticalAlignment="Top" Width="29" RenderTransformOrigin="-0.103,0.148" Click="mRefreshButton_Click" />
+        <Button x:Name="mButtonNewEmployee" Content="Neuer Mitarbeiter" HorizontalAlignment="Left" Height="21" Margin="10,231,0,0" VerticalAlignment="Top" Width="126" Click="mButtonNewEmployee_Click"/>
+        <Button x:Name="mButtonEditEmployee" Content="Mitarbeiter bearbeiten" HorizontalAlignment="Left" Height="21" Margin="135,231,0,0" VerticalAlignment="Top" Width="132" Grid.Column="1" Click="mButtonEditEmployee_Click"/>
+        <Button x:Name="mButtonDeleteEmployee" Content="Mitarbeiter löschen" HorizontalAlignment="Left" Height="21" Margin="439,231,0,0" VerticalAlignment="Top" Width="119" Grid.Column="1" Click="mButtonDeleteEmployee_Click"/>
         <Button x:Name="mCreateXMLEmployees" Content="XML-Datei erstellen" Grid.Column="1" HorizontalAlignment="Left" Height="27" Margin="392,0,0,0" VerticalAlignment="Top" Width="125" Click="mCreateXMLEmployees_Click"/>
+        <CheckBox x:Name="mCheckDatabaseCheckbox" IsThreeState="True" Margin="10,266,0,10" IsChecked="{x:Null}" HorizontalAlignment="Left" Width="344" Grid.ColumnSpan="2" FontSize="10" />
+        <Separator Name="MySeparator" Height="4" Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="-10,0,0,25" Grid.ColumnSpan="2" Background="#FF688CAF" />
     </Grid>
 </Window>

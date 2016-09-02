@@ -41,5 +41,8 @@ namespace WcfDatabaseService
 
         [OperationContract]
         string GetApplicationName();
+
+        [OperationContract]
+        bool CheckDatabaseAvailability();
     }
 }

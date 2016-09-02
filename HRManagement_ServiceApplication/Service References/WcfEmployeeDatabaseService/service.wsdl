@@ -67,6 +67,12 @@
   <wsdl:message name="IWcfEmployeeDatabaseService_GetApplicationName_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetApplicationNameResponse" />
   </wsdl:message>
+  <wsdl:message name="IWcfEmployeeDatabaseService_CheckDatabaseAvailability_InputMessage">
+    <wsdl:part name="parameters" element="tns:CheckDatabaseAvailability" />
+  </wsdl:message>
+  <wsdl:message name="IWcfEmployeeDatabaseService_CheckDatabaseAvailability_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CheckDatabaseAvailabilityResponse" />
+  </wsdl:message>
   <wsdl:portType name="IWcfEmployeeDatabaseService">
     <wsdl:operation name="InsertEmployeeAndAddresses">
       <wsdl:input wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/InsertEmployeeAndAddresses" message="tns:IWcfEmployeeDatabaseService_InsertEmployeeAndAddresses_InputMessage" />
@@ -107,6 +113,10 @@
     <wsdl:operation name="GetApplicationName">
       <wsdl:input wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/GetApplicationName" message="tns:IWcfEmployeeDatabaseService_GetApplicationName_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/GetApplicationNameResponse" message="tns:IWcfEmployeeDatabaseService_GetApplicationName_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CheckDatabaseAvailability">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/CheckDatabaseAvailability" message="tns:IWcfEmployeeDatabaseService_CheckDatabaseAvailability_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWcfEmployeeDatabaseService/CheckDatabaseAvailabilityResponse" message="tns:IWcfEmployeeDatabaseService_CheckDatabaseAvailability_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="BasicHttpBinding_IWcfEmployeeDatabaseService" type="tns:IWcfEmployeeDatabaseService">
@@ -194,6 +204,15 @@
     </wsdl:operation>
     <wsdl:operation name="GetApplicationName">
       <soap:operation soapAction="http://tempuri.org/IWcfEmployeeDatabaseService/GetApplicationName" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CheckDatabaseAvailability">
+      <soap:operation soapAction="http://tempuri.org/IWcfEmployeeDatabaseService/CheckDatabaseAvailability" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
