@@ -225,7 +225,7 @@ namespace HRManagement_ServiceApplication
             var employees = client.ReadAllEmployees(); // read all employees of the database
 
             mAllEmployees.Clear();
-            foreach (var item in employees)
+            foreach (var item in employees.OrderBy(x => x.LastName))
             {
                 AllEmployees.Add(item);
             }
