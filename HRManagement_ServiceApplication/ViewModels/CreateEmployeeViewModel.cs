@@ -312,8 +312,10 @@ namespace HRManagement_ServiceApplication
             {
                 mAddresses.Add(a);
             }
+
             OnPropertyChanged();
             mRemoveAddressCommand.FireCanExecuteChanged();
+            mEmployeeViewModel.UpdateEmployeeList(); // update the employee list because if the user hasn't saved, we have to get back the addresses of the database
         }
 
         #endregion
