@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:HRManagement_ServiceApplication"
         DataContext="HRManagement_ServiceApplication.EmployeeOverviewViewModel"
         mc:Ignorable="d"
-        Title="HR Management Software" Height="324.493" Width="771" ResizeMode="NoResize" Icon="Images/HRManagement.png">
+        Title="HR Management Software" Height="324" Width="771" ResizeMode="NoResize" Icon="Images/HRManagement.png">
     <Window.Resources>
         <SolidColorBrush x:Key="Red" Color="Red" />
         <SolidColorBrush x:Key="Green" Color="Green" />
