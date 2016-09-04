@@ -271,7 +271,7 @@ namespace HRManagement_ServiceApplication
         /// <param name="employee"></param>
         public void DeleteEmployee(Employee employee)
         {
-            var result = MessageBox.Show("Wollen Sie den gewählten Datensatz und die dazugehörige(n) Adresse(n) wirklich löschen?", "Adresse wirklich löschen", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var result = MessageBox.Show("Wollen Sie den gewählten Mitarbeiter und die dazugehörige(n) Adresse(n) wirklich löschen?", "Mitarbeiter wirklich löschen?", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result == MessageBoxResult.No)
             {
                 return;
