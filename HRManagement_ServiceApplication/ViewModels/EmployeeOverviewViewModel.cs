@@ -313,7 +313,7 @@ namespace HRManagement_ServiceApplication
 
             string outputPath = EmployeeXMLWriter.WriteEmployeeXML(employees.ToList());
 
-            MessageBox.Show(string.Format("Die Mitarbeiter wurden unter folgendem Pfad exportiert: '{0}'.", outputPath));
+            MessageBox.Show(string.Format("Die Mitarbeiter wurden unter folgendem Pfad exportiert: '{0}'.", outputPath), "Alle Mitarbeiter exportiert", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         #endregion
