@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HRManagement_ServiceApplication.WcfEmployeeDatabaseService;
 using System.Windows.Input;
-using HRManagement_ServiceApplication.WcfEmployeeDatabaseService;
+using System;
 
 namespace HRManagement_ServiceApplication.Commands
 {
