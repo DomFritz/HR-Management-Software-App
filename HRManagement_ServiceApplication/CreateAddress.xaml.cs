@@ -11,8 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using HRManagement_ServiceApplication_HRItems;
-using HRManagement_ServiceApplication;
+using HRManagement_ServiceApplication.WcfEmployeeDatabaseService;
 
 namespace HRManagement_ServiceApplication
 {

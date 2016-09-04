@@ -1,6 +1,5 @@
 ﻿using HRManagement_ServiceApplication.Commands;
 using HRManagement_ServiceApplication.WcfEmployeeDatabaseService;
-using HRManagement_ServiceApplication_HRItems;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -256,7 +255,7 @@ namespace HRManagement_ServiceApplication
                 FirstName = mFirstName,
                 LastName = mLastName,
                 Age = mAge,
-                Addresses = createdAddresses
+                Addresses = createdAddresses.ToArray()
             };
 
             int retVal = serviceClient.InsertEmployeeAndAddresses(newCreatedEmployee);
@@ -337,7 +336,7 @@ namespace HRManagement_ServiceApplication
             mEmployee.Age = Age;
             mEmployee.FirstName = mFirstName;
             mEmployee.LastName = mLastName;
-            mEmployee.Addresses = createdAddresses;
+            mEmployee.Addresses = createdAddresses.ToArray();
 
             WcfEmployeeDatabaseServiceClient serviceClient = new WcfEmployeeDatabaseServiceClient();
             serviceClient.DeleteAddressesOfEmployee(mEmployee.Id); // delete all addresses before adding all created ones.

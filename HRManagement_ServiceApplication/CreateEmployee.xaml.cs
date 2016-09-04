@@ -12,8 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
-using HRManagement_ServiceApplication_HRItems;
-using HRManagement_ServiceApplication;
+using HRManagement_ServiceApplication.WcfEmployeeDatabaseService;
 
 namespace HRManagement_ServiceApplication
 {
@@ -43,7 +42,7 @@ namespace HRManagement_ServiceApplication
                 emp = new Employee()
                 {
                     Id = newGuid,
-                    Addresses = new List<Address>()
+                    Addresses = new List<Address>().ToArray()
                 };
             }
             else

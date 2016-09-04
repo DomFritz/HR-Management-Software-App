@@ -1,4 +1,4 @@
-﻿using HRManagement_ServiceApplication_HRItems;
+﻿using HRManagement_ServiceApplication.WcfEmployeeDatabaseService;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

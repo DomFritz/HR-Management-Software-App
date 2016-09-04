@@ -25,7 +25,7 @@
     <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="9afcb84b-e462-42ee-aa79-076e7bde393c" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/WcfDatabaseService/IWcfEmployeeDatabaseService/mex" />
     <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="7fcade19-74ab-4acf-b8e1-1983b0051158" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/WcfDatabaseService/IWcfEmployeeDatabaseService/mex" />
     <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="c01128c8-e018-4a18-bd7e-baa8ba06fd0f" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/WcfDatabaseService/IWcfEmployeeDatabaseService/mex" />
-    <MetadataFile FileName="HRManagement_ServiceApplication_HRItems.xsd" MetadataType="Schema" ID="0821e991-dbd4-48d9-8fbb-e72c1cb7058c" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/WcfDatabaseService/IWcfEmployeeDatabaseService/mex" />
+    <MetadataFile FileName="HRManagement_ServiceApplication_HRItems1.xsd" MetadataType="Schema" ID="42753ba9-9e5e-4a2b-a712-c8d0c0129938" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/WcfDatabaseService/IWcfEmployeeDatabaseService/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
