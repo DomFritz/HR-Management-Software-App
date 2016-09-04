@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="5bb5ce93-b1b4-48da-bde0-828d831eb1ca" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="de2eef6f-d2ce-4229-a135-a360bdc5c2bf" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
   <ClientOptions>
     <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
     <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
@@ -22,10 +22,10 @@
     <MetadataSource Address="http://localhost:8733/Design_Time_Addresses/WcfDatabaseService/IWcfEmployeeDatabaseService/mex" Protocol="mex" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="76256ef9-991c-4192-9236-cecad330e589" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/WcfDatabaseService/IWcfEmployeeDatabaseService/mex" />
-    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="f5c030dd-35f1-44db-a41e-7444e352c330" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/WcfDatabaseService/IWcfEmployeeDatabaseService/mex" />
-    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="7af06a1c-be80-475d-9cc0-bc4cd52d42b3" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/WcfDatabaseService/IWcfEmployeeDatabaseService/mex" />
-    <MetadataFile FileName="WcfDatabaseService.xsd" MetadataType="Schema" ID="9fc42519-2820-47bc-adc8-4a52fef4c292" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/WcfDatabaseService/IWcfEmployeeDatabaseService/mex" />
+    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="9afcb84b-e462-42ee-aa79-076e7bde393c" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/WcfDatabaseService/IWcfEmployeeDatabaseService/mex" />
+    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="7fcade19-74ab-4acf-b8e1-1983b0051158" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/WcfDatabaseService/IWcfEmployeeDatabaseService/mex" />
+    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="c01128c8-e018-4a18-bd7e-baa8ba06fd0f" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/WcfDatabaseService/IWcfEmployeeDatabaseService/mex" />
+    <MetadataFile FileName="HRManagement_ServiceApplication_HRItems.xsd" MetadataType="Schema" ID="0821e991-dbd4-48d9-8fbb-e72c1cb7058c" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/WcfDatabaseService/IWcfEmployeeDatabaseService/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

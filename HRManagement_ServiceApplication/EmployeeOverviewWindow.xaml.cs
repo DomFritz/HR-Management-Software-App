@@ -1,4 +1,4 @@
-﻿using HRManagement_ServiceApplication.WcfEmployeeDatabaseService;
+﻿using HRManagement_ServiceApplication_HRItems;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -21,188 +21,44 @@ namespace HRManagement_ServiceApplication
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class EmployeeOverviewWindow : Window, IUpdateableEmployeeContent
+    public partial class EmployeeOverviewWindow : Window
     {
-        private DispatcherTimer mCheckDatabaseDispatcherTimer = new DispatcherTimer();
-        private WcfEmployeeDatabaseServiceClient mCheckDatabaseConnectionService = null;
-
         /// <summary>
         /// The main window of the application.
         /// </summary>
         public EmployeeOverviewWindow()
         {
             InitializeComponent();
-            CheckDatabaseConnection();
-            SetPictureOfRefreshButton();
+            SetButtonPictures();
 
-            UpdateEmployeeList();
             Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose; // shut down the application when the main window is closed.
-
-            mCheckDatabaseDispatcherTimer.Tick += new EventHandler(DispatcherTimer_Tick);
-            mCheckDatabaseDispatcherTimer.Interval = new TimeSpan(0, 0, 5);
-            mCheckDatabaseDispatcherTimer.Start(); // check every 5 seconds if the database is available and can be connected
+            this.DataContext = new EmployeeOverviewViewModel();
         }
 
-        internal static string ApplicationName
+        private void SetButtonPictures() // set the pictures of the buttons - the buttons will be committed under an image-folder
         {
-            get
-            {
-                return new WcfEmployeeDatabaseServiceClient().GetApplicationName();
-            }
+            var directoryName = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            mButtonNewEmployee.Content = ButtonImages.GetButtonContent(new Uri(System.IO.Path.Combine(directoryName, "Images\\Add.png")));
+            mButtonDeleteEmployee.Content = ButtonImages.GetButtonContent(new Uri(System.IO.Path.Combine(directoryName, "Images\\Remove.png")));
+            mButtonEditEmployee.Content = ButtonImages.GetButtonContent(new Uri(System.IO.Path.Combine(directoryName, "Images\\Edit.png")));
+            mRefreshButton.Content = ButtonImages.GetButtonContent(new Uri(System.IO.Path.Combine(directoryName, "Images\\RefreshButton.png")));
+            mCreateXMLEmployees.Content = ButtonImages.GetButtonContent(new Uri(System.IO.Path.Combine(directoryName, "Images\\Xml.png")));
         }
 
-        private void SetPictureOfRefreshButton()
-        {
-            Image img = new Image();
-            img.Source = new BitmapImage(new Uri(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "Images\\RefreshButton.png")));
-            img.Stretch = Stretch.Uniform;
-
-            StackPanel stackPnl = new StackPanel();
-            stackPnl.Orientation = Orientation.Horizontal;
-            stackPnl.Children.Add(img);
-
-            mRefreshButton.Content = stackPnl;
-        }
-
-        private void mRefreshButton_Click(object sender, RoutedEventArgs e)
-        {
-            UpdateEmployeeList();
-        }
-
-        /// <summary>
-        /// This method updates the employee list in the list view after a change (if deleted, or edited)
-        /// </summary>
-        public void UpdateEmployeeList()
-        {
-            WcfEmployeeDatabaseServiceClient client = new WcfEmployeeDatabaseServiceClient();
-            var employees = client.ReadAllEmployees(); // read all employees of the database
-
-            this.mEmployeeView.Items.Clear();
-
-            this.mEmployeeView.DataContext = employees;
-            foreach (var item in employees)
-            {
-                this.mEmployeeView.Items.Add(item);
-            }
-        }
-
-        private void mEmployeeView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void mEmployeeView_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (sender != null)
             {
-                DataGridRow dgr = sender as DataGridRow;
-                var employee = dgr.Item as Employee;
-
-                if (employee != null)
+                DataGrid grid = sender as DataGrid;
+                if (grid != null && grid.SelectedItems != null && grid.SelectedItems.Count == 1)
                 {
-                    new CreateEmployee(DialogMode.Update, this, mEmployeeView.SelectedItem != null ? mEmployeeView.SelectedItem as Employee : employee).Show();
+                    DataGridRow dgr = grid.ItemContainerGenerator.ContainerFromItem(grid.SelectedItem) as DataGridRow;
+                    if (!dgr.IsMouseOver)
+                    {
+                        (dgr as DataGridRow).IsSelected = false; // deselect if clicking in the "white empty" space of the datagrid
+                    }
                 }
             }
-        }
-
-        private void mEmployeeView_KeyDownEvent(object sender, KeyEventArgs e) // delete the selected entry when ENTF-Key is pressed.
-        {
-            if (mEmployeeView.SelectedItem == null)
-            {
-                return;
-            }
-
-            if(e.Key != Key.Delete)
-            {
-                return;
-            }
-            else
-            {
-                mButtonDeleteEmployee_Click(this, null);
-            }
-        }
-
-        private void mButtonNewEmployee_Click(object sender, RoutedEventArgs e)
-        {
-            new CreateEmployee(DialogMode.Create, this).Show();
-        }
-
-        private void mButtonEditEmployee_Click(object sender, RoutedEventArgs e)
-        {
-            if (mEmployeeView.SelectedItem == null)
-            {
-                MessageBox.Show("Es wurde kein Mitarbeiter zum Bearbeiten selektiert.");
-                return;
-            }
-
-            new CreateEmployee(DialogMode.Update, this, mEmployeeView.SelectedItem as Employee).Show();
-        }
-
-        private void mButtonDeleteEmployee_Click(object sender, RoutedEventArgs e)
-        {
-            if (mEmployeeView.SelectedItem == null)
-            {
-                MessageBox.Show("Es wurde kein Mitarbeiter zum Löschen selektiert.");
-                return;
-            }
-
-            var result = MessageBox.Show("Wollen Sie den gewählten Datensatz und die dazugehörige(n) Adresse(n) wirklich löschen?", string.Empty, MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (result == MessageBoxResult.No)
-            {
-                return;
-            }
-            else
-            {
-                WcfEmployeeDatabaseServiceClient client = new WcfEmployeeDatabaseServiceClient();
-                var employee = mEmployeeView.SelectedItem as Employee;
-
-                foreach (var address in employee.Addresses)
-                {
-                    client.DeleteAddress(address); // delete all addresses before deleting the employee
-                }
-
-                if (client.DeleteEmployee(employee) != 1)
-                {
-                    MessageBox.Show("Der Mitarbeiter konnte nicht gelöscht werden.");
-                }
-
-                this.UpdateEmployeeList();
-            }
-        }
-
-        private void mCreateXMLEmployees_Click(object sender, RoutedEventArgs e)
-        {
-            WcfEmployeeDatabaseServiceClient client = new WcfEmployeeDatabaseServiceClient();
-            var employees = client.ReadAllEmployees();
-
-            if (!employees.Any())
-            {
-                MessageBox.Show("Es sind keine Mitarbeiter vorhanden, die in eine XML-Datei geschrieben werden können.");
-                return;
-            }
-
-            string outputPath = EmployeeXMLWriter.WriteEmployeeXML(employees.ToList());
-
-            MessageBox.Show(string.Format("Die Mitarbeiter wurden unter folgendem Pfad exportiert: '{0}'.", outputPath));
-        }
-
-        private void CheckDatabaseConnection()
-        {
-            if(mCheckDatabaseConnectionService == null)
-            {
-                mCheckDatabaseConnectionService = new WcfEmployeeDatabaseServiceClient();
-            }
-
-            if (mCheckDatabaseConnectionService.CheckDatabaseAvailability())
-            {
-                mCheckDatabaseCheckbox.IsChecked = false;
-                mCheckDatabaseCheckbox.Content = "Die Verbindung zur Datenbank wurde erfolgreich aufgebaut.";
-            }
-            else
-            {
-                mCheckDatabaseCheckbox.IsChecked = true;
-                mCheckDatabaseCheckbox.Content = "Es kann keine Verbindung zur Datenbank aufgebaut werden.";
-            }
-        }
-
-        private void DispatcherTimer_Tick(object sender, EventArgs e)
-        {
-            CheckDatabaseConnection();
         }
     }
 }

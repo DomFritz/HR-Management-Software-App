@@ -11,7 +11,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using HRManagement_ServiceApplication.WcfEmployeeDatabaseService;
+using HRManagement_ServiceApplication_HRItems;
+using HRManagement_ServiceApplication;
 
 namespace HRManagement_ServiceApplication
 {
@@ -20,77 +21,62 @@ namespace HRManagement_ServiceApplication
     /// </summary>
     public partial class CreateAddress : Window
     {
-        private Guid mEmployeeId = Guid.Empty;
-        private DialogMode mMode;
-        private ICreatedAddressesContent mCreatedAddressView;
-        private Address mAddressToUpdate;
-
-        public CreateAddress(DialogMode mode, Guid employeeId, ICreatedAddressesContent createAddressView, Address addressToUpdate = null)
+        public CreateAddress(IAddOrUpdateAddressContent createAddressView, DialogMode mode, Guid employeeId, Address addressToUpdate = null)
         {
             InitializeComponent();
-            mEmployeeId = employeeId;
-            mMode = mode;
-            mCreatedAddressView = createAddressView;
-            mAddressToUpdate = addressToUpdate;
 
-            if (mode == DialogMode.Update)
+            if(mode == DialogMode.Create)
             {
-                Title = "Addresse bearbeiten";
-                mButtonAddAddress.Content = "Änderungen übernehmen";
-
-                mTextBoxCity.Text = addressToUpdate.City;
-                mTextBoxState.Text = addressToUpdate.State;
-                mTextBoxStreet.Text = addressToUpdate.Street;
-                mTextBoxZip.Text = addressToUpdate.Zip.ToString();
-            }
-        }
-
-        public List<Address> GetCreatedAddresses()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void mButtonAddAddress_Click(object sender, RoutedEventArgs e)
-        {
-            if (string.IsNullOrEmpty(mTextBoxState.Text) || string.IsNullOrEmpty(mTextBoxZip.Text))
-            {
-                MessageBox.Show("Um einen Datensatz zu speichern, müssen mindestens die Felder Staat und PLZ ausgefüllt sein.");
-                return;
-            }
-
-            int zip = 0;
-            if (!Int32.TryParse(mTextBoxZip.Text, out zip))
-            {
-                MessageBox.Show("Der Wert im Feld PLZ ist ungültig.");
-                return;
-            }
-
-            WcfEmployeeDatabaseServiceClient serviceClient = new WcfEmployeeDatabaseServiceClient();
-
-            if (mMode == DialogMode.Create)
-            {
-                Address newAddress = new Address()
-                {
-                    Id = Guid.NewGuid(),
-                    Street = mTextBoxStreet.Text,
-                    City = mTextBoxCity.Text,
-                    State = mTextBoxState.Text,
-                    Zip = zip
-                };
-
-                mCreatedAddressView.UpdateAddressesListView(newAddress);
-                this.Close();
+                addressToUpdate = new Address() { Id = Guid.NewGuid(), EmployeeId = employeeId };
+                mTextBoxStreet.Focus();
             }
             else
             {
-                mAddressToUpdate.City = mTextBoxCity.Text;
-                mAddressToUpdate.State = mTextBoxState.Text;
-                mAddressToUpdate.Street = mTextBoxStreet.Text;
-                mAddressToUpdate.Zip = zip;
-                mAddressToUpdate.EmployeeId = mEmployeeId;
+                Title = "Addresse bearbeiten";
+                mButtonAddAddress.Content = "Änderungen übernehmen";
+            }
 
-                mCreatedAddressView.UpdateAddressesListView(mAddressToUpdate);
-                this.Close();
+            var viewModel = new CreateAddressViewModel(createAddressView, addressToUpdate, mode, employeeId);
+            if(viewModel.CloseAction == null)
+            {
+                viewModel.CloseAction = new Action(this.Close);
+            }
+            this.DataContext = viewModel;
+        }
+
+        private void mTextBoxZip_KeyUp(object sender, KeyEventArgs e)
+        {
+            var viewModel = this.DataContext as CreateAddressViewModel;
+            if (viewModel != null)
+            {
+                if (string.IsNullOrEmpty(mTextBoxZip.Text))
+                {
+                    viewModel.Zip = 0;
+                    mTextBoxZip.SelectAll();
+                }
+                else
+                {
+                    int age = 0;
+                    if (Int32.TryParse(mTextBoxZip.Text, out age))
+                    {
+                        viewModel.Zip = age;
+                    }
+                    else
+                    {
+                        viewModel.Zip = 0;
+                        mTextBoxZip.SelectAll();
+                    }
+                }
+
+                viewModel.FireOnCheckPlzField();
+            }
+        }
+
+        private void mTextBoxZip_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (mTextBoxZip.Text == "0") // if invalid age mark all in the textbox to overwrite it when typing in
+            {
+                mTextBoxZip.SelectAll();
             }
         }
     }

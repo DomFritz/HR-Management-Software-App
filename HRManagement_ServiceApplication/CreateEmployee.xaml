@@ -5,7 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HRManagement_ServiceApplication"
         mc:Ignorable="d"
+        DataContext="HRManagement_ServiceApplication.CreateEmployeeViewModel"
         Title="Mitarbeiter erstellen" Height="445" Width="462" ResizeMode="NoResize" Icon="Images/HRManagement.png">
+    <Window.Resources>
+        <local:EmployeeConverter x:Key="NameEmployeeConverter" />
+    </Window.Resources>
     <Grid Margin="0,0,16,0" HorizontalAlignment="Right" Width="413">
         <Grid.RowDefinitions>
             <RowDefinition Height="62*"/>
@@ -18,29 +22,37 @@
             <ColumnDefinition Width="208*"/>
         </Grid.ColumnDefinitions>
         <Label x:Name="mLabelID" Content="Mitarbeiter-ID" HorizontalAlignment="Left" Height="23" Margin="10,10,0,0" VerticalAlignment="Top" Width="89"/>
-        <TextBox x:Name="mTextBoxID" HorizontalAlignment="Left" IsEnabled="false" Height="23" Margin="116,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="289" Grid.ColumnSpan="4"/>
+        <TextBox x:Name="mTextBoxID" HorizontalAlignment="Left" IsEnabled="false" Height="23" Margin="116,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="289" Grid.ColumnSpan="4" Text="{Binding Id, Mode=OneWay}"/>
         <Label x:Name="mLabelFirstName" Content="Vorname" HorizontalAlignment="Left" Height="29" Margin="10,47,0,0" VerticalAlignment="Top" Width="81" RenderTransformOrigin="0.347,0.461"/>
-        <TextBox x:Name="mTextBoxFirstName" HorizontalAlignment="Left" Height="23" Margin="116,47,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="289" Grid.ColumnSpan="4"/>
+        <TextBox x:Name="mTextBoxFirstName" HorizontalAlignment="Left" Height="23" Margin="116,47,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="289" Grid.ColumnSpan="4" Text="{Binding FirstName}"/>
         <Label x:Name="mLabelLastName" Content="Nachname" HorizontalAlignment="Left" Height="29" Margin="10,86,0,0" VerticalAlignment="Top" Width="81" RenderTransformOrigin="0.347,0.461"/>
-        <TextBox x:Name="mTextBoxLastName" HorizontalAlignment="Left" Height="23" Margin="116,86,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="289" Grid.ColumnSpan="4"/>
+        <TextBox x:Name="mTextBoxLastName" HorizontalAlignment="Left" Height="23" Margin="116,86,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="289" Grid.ColumnSpan="4" Text="{Binding LastName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
         <Label x:Name="mLabelAge" Content="Alter" HorizontalAlignment="Left" Margin="10,123,0,0" VerticalAlignment="Top" Width="72"/>
-        <TextBox x:Name="mTextBoxAge" HorizontalAlignment="Left" Height="23" Margin="116,123,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="66" Grid.ColumnSpan="2"/>
-        <Button x:Name="mButtonSaveClose" Content="Mitarbeiter hinzufügen" HorizontalAlignment="Right" Height="26" Margin="0,97,8,0" VerticalAlignment="Top" Width="153" Grid.Column="3" RenderTransformOrigin="-0.001,0.629" Grid.Row="1" Click="mButtonSaveAndClose_Click"/>
-        <DataGrid x:Name="mAddressesView" HorizontalAlignment="Left" Margin="10,191,0,41" Grid.ColumnSpan="4" Width="395" SelectionMode="Single" SelectionUnit="FullRow" AutoGenerateColumns="False" Background="{x:Null}" Grid.RowSpan="2">
+        <TextBox x:Name="mTextBoxAge" HorizontalAlignment="Left" Height="23" Margin="116,123,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="66" Grid.ColumnSpan="2" Text="{Binding Age}" GotFocus="mTextBoxAge_GotFocus" KeyUp="mTextBoxAge_KeyUp"/>
+        <Button x:Name="mButtonSaveClose" Content="Mitarbeiter hinzufügen" HorizontalAlignment="Right" Height="26" Margin="0,97,8,0" VerticalAlignment="Top" Width="153" Grid.Column="3" RenderTransformOrigin="-0.001,0.629" Grid.Row="1" Command="{Binding SaveCommand}" >
+            <Button.CommandParameter>
+                <MultiBinding Converter="{StaticResource NameEmployeeConverter}">
+                    <Binding Path="FirstName"/>
+                    <Binding Path="LastName"/>
+                    <Binding Path="Age"/>
+                </MultiBinding>
+            </Button.CommandParameter>
+        </Button>
+        <DataGrid x:Name="mAddressesView" ItemsSource="{Binding Addresses, Mode=TwoWay}" SelectedItem="{Binding SelectedAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" CanUserAddRows="False" HorizontalAlignment="Left" Margin="10,191,0,41" Grid.ColumnSpan="4" Width="395" SelectionMode="Single" SelectionUnit="FullRow" AutoGenerateColumns="False" Background="{x:Null}" Grid.RowSpan="2" MouseLeftButtonDown="mAddressesView_MouseLeftButtonDown">
             <DataGrid.Columns>
-                <DataGridTextColumn x:Name="mZipColumn" Header="Postleitzahl" Binding="{Binding Zip}" IsReadOnly="True"/>
+                <DataGridTextColumn x:Name="mZipColumn" Header="PLZ" Binding="{Binding Zip}" IsReadOnly="True"/>
                 <DataGridTextColumn x:Name="mStreetColumn" Header="Straße" Binding="{Binding Street}" IsReadOnly="True"/>
                 <DataGridTextColumn x:Name="mCityColumn" Header="Ort" Binding="{Binding City}" IsReadOnly="True"/>
                 <DataGridTextColumn x:Name="mStateColumn" Header="Staat" Binding="{Binding State}" IsReadOnly="True"/>
             </DataGrid.Columns>
-            <DataGrid.RowStyle>
-                <Style TargetType="{x:Type DataGridRow}">
-                    <EventSetter Event="Control.MouseDoubleClick" Handler="mAddressesView_MouseDoubleClick"/>
-                    <EventSetter Event="UIElement.KeyDown" Handler="mAddressesView_KeyDownEvent"/>
-                </Style>
-            </DataGrid.RowStyle>
+            <DataGrid.InputBindings>
+                <MouseBinding Gesture="LeftDoubleClick" Command="{Binding EditAddressCommand}" />
+                <KeyBinding Gesture="Delete" Key="Delete" Command="{Binding RemoveAddressCommand}"/>
+            </DataGrid.InputBindings>
         </DataGrid>
         <Label x:Name="mAddressesLabel" Content="Adressen" HorizontalAlignment="Left" Margin="10,160,0,0" VerticalAlignment="Top" Width="72"/>
-        <Button x:Name="mButtonAddAddress" Content="Adresse hinzufügen" HorizontalAlignment="Right" Height="26" Margin="0,160,8,0" VerticalAlignment="Top" Width="124" Grid.Column="3" RenderTransformOrigin="-0.001,0.629" Click="mButtonAddAddress_Click"/>
+        <Button x:Name="mButtonAddAddress" Content="" HorizontalAlignment="Right" Height="26" Margin="0,160,70,0" VerticalAlignment="Top" Width="28" Grid.Column="3" RenderTransformOrigin="-0.001,0.629" Command="{Binding AddAddressCommand}" />
+        <Button x:Name="mButtonRemoveAddress" Content="" HorizontalAlignment="Right" Height="26" Margin="0,160,8,0" VerticalAlignment="Top" Width="28" Grid.Column="3" RenderTransformOrigin="-0.001,0.629" Command="{Binding RemoveAddressCommand}" />
+        <Button x:Name="mButtonEditAddress" Content="" HorizontalAlignment="Right" Height="26" Margin="0,160,39,0" VerticalAlignment="Top" Width="28" Grid.Column="3" RenderTransformOrigin="-0.001,0.629" Command="{Binding EditAddressCommand}" />
     </Grid>
 </Window>

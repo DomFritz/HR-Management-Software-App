@@ -36,6 +36,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="HR_Items, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Serialization" />
@@ -58,20 +59,37 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Images\ButtonImages.cs" />
+    <Compile Include="Commands\AddSaveAddressCommand.cs" />
+    <Compile Include="Commands\CreateNewEmployeeCommand.cs" />
+    <Compile Include="Commands\DeleteEmployeeCommand.cs" />
+    <Compile Include="Commands\EditAddressCommand.cs" />
+    <Compile Include="Commands\EditEmployeeCommand.cs" />
+    <Compile Include="Commands\RefreshButtonCommand.cs" />
+    <Compile Include="Commands\RemoveAddressCommand.cs" />
+    <Compile Include="Commands\ShowAddressControlCommand.cs" />
+    <Compile Include="Commands\SaveEmployeeCommand.cs" />
+    <Compile Include="Commands\UpdateAddressCommand.cs" />
+    <Compile Include="Commands\UpdateEmployeeCommand.cs" />
+    <Compile Include="Commands\XMLExportCommand.cs" />
+    <Compile Include="Converters\EmployeeConverter.cs" />
     <Compile Include="CreateAddress.xaml.cs">
       <DependentUpon>CreateAddress.xaml</DependentUpon>
     </Compile>
     <Compile Include="CreateEmployee.xaml.cs">
       <DependentUpon>CreateEmployee.xaml</DependentUpon>
     </Compile>
-    <Compile Include="EmployeeXMLWriter.cs" />
-    <Compile Include="ICreatedAddressesContent.cs" />
-    <Compile Include="IUpdateableEmployeeContent.cs" />
     <Compile Include="Service References\WcfEmployeeDatabaseService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\CreateAddressViewModel.cs" />
+    <Compile Include="ViewModels\CreateEmployeeViewModel.cs" />
+    <Compile Include="EmployeeXMLWriter.cs" />
+    <Compile Include="ICreatedAddressesContent.cs" />
+    <Compile Include="IUpdateableEmployeeContent.cs" />
+    <Compile Include="ViewModels\EmployeeOverviewViewModel.cs" />
     <Page Include="CreateAddress.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -111,16 +129,16 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="app.config" />
+    <None Include="Properties\DataSources\HRManagement_ServiceApplication_HRItems.Address.datasource" />
+    <None Include="Properties\DataSources\HRManagement_ServiceApplication_HRItems.Employee.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <None Include="Service References\WcfEmployeeDatabaseService\HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Address.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\WcfEmployeeDatabaseService\HRManagement_ServiceApplication.WcfEmployeeDatabaseService.Employee.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
+    <None Include="Service References\WcfEmployeeDatabaseService\HRManagement_ServiceApplication_HRItems.xsd">
+      <SubType>Designer</SubType>
     </None>
     <None Include="Service References\WcfEmployeeDatabaseService\service.wsdl" />
     <None Include="Service References\WcfEmployeeDatabaseService\service.xsd">
@@ -129,23 +147,27 @@
     <None Include="Service References\WcfEmployeeDatabaseService\service1.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\WcfEmployeeDatabaseService\WcfDatabaseService.xsd">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Images\Add.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Edit.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Images\HRManagement.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\RefreshButton.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Remove.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\XML.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Service References\WcfEmployeeDatabaseService\Reference.svcmap">

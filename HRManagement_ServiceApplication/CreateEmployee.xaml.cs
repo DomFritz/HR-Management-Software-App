@@ -11,210 +11,116 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using HRManagement_ServiceApplication.WcfEmployeeDatabaseService;
 using System.Collections.ObjectModel;
+using HRManagement_ServiceApplication_HRItems;
+using HRManagement_ServiceApplication;
 
 namespace HRManagement_ServiceApplication
 {
-    public enum DialogMode
-    {
-        Create = 0,
-        Update = 1
-    }
-
     /// <summary>
     /// Interaction logic for Window1.xaml
     /// </summary>
-    public partial class CreateEmployee : Window, ICreatedAddressesContent
+    public partial class CreateEmployee : Window
     {
-        private Guid mNewGuid;
-        private IUpdateableEmployeeContent mUpdateableContent;
-        private DialogMode mMode;
-        private Employee mEmployeeToUpdate = null;
-
         /// <summary>
         /// This dialog has two modes. It is used to create an employee and to edit an employee
         /// </summary>
         /// <param name="mode">The mode if we create or update an employee.</param>
         /// <param name="mainWindow">The main window, necessary to update the list view.</param>
         /// <param name="employeeToUpdate">The employee to update if we have update-mode, null if creation mode.</param>
-        public CreateEmployee(DialogMode mode, IUpdateableEmployeeContent mainWindow, Employee employeeToUpdate = null)
+        public CreateEmployee(IUpdateableEmployeeContent updateableContent, DialogMode mode, Employee employeeToUpdate = null)
         {
             InitializeComponent();
-            mUpdateableContent = mainWindow;
-            mMode = mode;
-            mEmployeeToUpdate = employeeToUpdate;
+
+            Employee emp = employeeToUpdate != null ? employeeToUpdate : null; // if update, choose the employee of the parameters, otherwise create a new one
 
             if (mode == DialogMode.Create)
             {
-                mNewGuid = Guid.NewGuid();
-                mTextBoxID.Text = mNewGuid.ToString();
+                var newGuid = Guid.NewGuid(); // create a new guid for the employee
+                mTextBoxID.Text = newGuid.ToString();
                 mTextBoxFirstName.Focus();
+
+                emp = new Employee()
+                {
+                    Id = newGuid,
+                    Addresses = new List<Address>()
+                };
             }
             else
             {
-                mButtonSaveClose.Content = "Änderungen übernehmen";
+                mButtonSaveClose.Content = "Änderungen übernehmen"; // other title and button name when updating
                 Title = "Mitarbeiter bearbeiten";
+            }
 
-                // read the addresses for the employee
-                WcfEmployeeDatabaseServiceClient serviceClient = new WcfEmployeeDatabaseServiceClient();
-                var employeeAddresses = serviceClient.ReadAllAddresses(employeeToUpdate);
-                this.mAddressesView.DataContext = employeeAddresses;
-                foreach (var address in serviceClient.ReadAllAddresses(employeeToUpdate))
-                {
-                    mAddressesView.Items.Add(address);
-                }
+            var viewModel = new CreateEmployeeViewModel(updateableContent, emp, mode);
+            if (viewModel.CloseAction == null)
+            {
+                viewModel.CloseAction = new Action(this.Close);
+            }
+            this.DataContext = viewModel;
 
-                mTextBoxID.Text = employeeToUpdate.Id.ToString();
-                mTextBoxAge.Text = employeeToUpdate.Age.ToString();
-                mTextBoxFirstName.Text = employeeToUpdate.FirstName;
-                mTextBoxLastName.Text = employeeToUpdate.LastName;
+            SetPicturesOfButtons();
+        }
+       
+
+        private void SetPicturesOfButtons()
+        {
+            var directoryName = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            mButtonAddAddress.Content = ButtonImages.GetButtonContent(new Uri(System.IO.Path.Combine(directoryName, "Images\\Add.png")));
+            mButtonRemoveAddress.Content = ButtonImages.GetButtonContent(new Uri(System.IO.Path.Combine(directoryName, "Images\\Remove.png")));
+            mButtonEditAddress.Content = ButtonImages.GetButtonContent(new Uri(System.IO.Path.Combine(directoryName, "Images\\Edit.png")));
+        }
+
+        private void mTextBoxAge_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if(mTextBoxAge.Text == "0") // if invalid age mark all in the textbox to overwrite it when typing in
+            {
+                mTextBoxAge.SelectAll();
             }
         }
 
-        private void mButtonSaveAndClose_Click(object sender, RoutedEventArgs e)
+        private void mTextBoxAge_KeyUp(object sender, KeyEventArgs e) // check after every keyup if it is a valid age - otherwise the submit-button stays disabled
         {
-            if (string.IsNullOrEmpty(mTextBoxAge.Text) || string.IsNullOrEmpty(mTextBoxLastName.Text))
+            var viewModel = this.DataContext as CreateEmployeeViewModel;
+
+            if (viewModel != null)
             {
-                MessageBox.Show("Um einen Datensatz zu speichern, müssen mindestens die Felder Nachname und Alter ausgefüllt sein.");
-                return;
-            }
-
-            int age = 0;
-            if (!Int32.TryParse(mTextBoxAge.Text, out age))
-            {
-                MessageBox.Show("Das Feld Alter hat keinen gültigen Wert.");
-                return;
-            }
-
-            WcfEmployeeDatabaseServiceClient serviceClient = new WcfEmployeeDatabaseServiceClient();
-
-            if (mMode == DialogMode.Create)
-            {
-                List<Address> createdAddresses = new List<Address>();
-                foreach (Address address in mAddressesView.Items)
+                if (string.IsNullOrEmpty(mTextBoxAge.Text))
                 {
-                    createdAddresses.Add(address);
-                }
-
-                Employee newCreatedEmployee = new Employee()
-                {
-                    Id = Guid.NewGuid(),
-                    FirstName = mTextBoxFirstName.Text,
-                    LastName = mTextBoxLastName.Text,
-                    Age = age,
-                    Addresses = createdAddresses.ToArray()
-                };
-
-                int retVal = serviceClient.InsertEmployeeAndAddresses(newCreatedEmployee);
-                if (retVal == 1)
-                {
-                    MessageBox.Show("Der Mitarbeiter wurde erfolgreich hinzugefügt.");
-                    mUpdateableContent.UpdateEmployeeList();
-                    this.Close();
-                }
-                else if (retVal == 0)
-                {
-                    MessageBox.Show("Ein Mitarbeiter mit diesen Daten existiert bereits.");
-                }
-                else if (retVal == -1)
-                {
-                    MessageBox.Show("Es besteht ein Problem mit der Datenbank. Bitte prüfen Sie diese und die Verbindung");
-                }
-            }
-            else
-            {
-                List<Address> createdAddresses = new List<Address>();
-                foreach (Address address in mAddressesView.Items)
-                {
-                    createdAddresses.Add(address);
-                }
-
-                mEmployeeToUpdate.Age = age;
-                mEmployeeToUpdate.FirstName = mTextBoxFirstName.Text;
-                mEmployeeToUpdate.LastName = mTextBoxLastName.Text;
-                mEmployeeToUpdate.Addresses = createdAddresses.ToArray();
-
-                serviceClient.DeleteAddressesOfEmployee(mEmployeeToUpdate.Id); // delete all addresses before adding all created ones.
-                int retVal = serviceClient.UpdateEmployeeAndAddresses(mEmployeeToUpdate);
-                if (retVal > 0)
-                {
-                    MessageBox.Show("Der Datensatz wurde erfolgreich aktualisiert.");
-                    this.Close();
+                    viewModel.Age = 0;
+                    mTextBoxAge.SelectAll();
                 }
                 else
                 {
-                    MessageBox.Show("Es gab ein Problem beim Aktualisieren der Daten. Bitte prüfen Sie die eingegebenen Daten auf ihre Korrektheit.");
+                    int age = 0;
+                    if(Int32.TryParse(mTextBoxAge.Text, out age))
+                    {
+                        viewModel.Age = age; // set age after every VALID entry
+                    }
+                    else
+                    {
+                        viewModel.Age = 0;
+                        mTextBoxAge.SelectAll();
+                    }
                 }
+
+                viewModel.FireOnCheckAgeField(); // check if the age-field is valid
             }
         }
 
-        private void mButtonAddAddress_Click(object sender, RoutedEventArgs e)
-        {
-            new CreateAddress(DialogMode.Create, Guid.Parse(mTextBoxID.Text), this).Show();
-        }
-
-        public void UpdateAddressesListView(Address address)
-        {
-            if (!mAddressesView.Items.Contains(address))
-            {
-                mAddressesView.Items.Add(address);
-            }
-            else
-            {
-                mAddressesView.Items.Remove(address);
-                mAddressesView.Items.Add(address);
-            }
-        }
-
-        private void mAddressesView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void mAddressesView_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (sender != null)
             {
-                DataGridRow dgr = sender as DataGridRow;
-                var address = dgr.Item as Address;
-
-                if (address != null)
+                DataGrid grid = sender as DataGrid;
+                if (grid != null && grid.SelectedItems != null && grid.SelectedItems.Count == 1)
                 {
-                    new CreateAddress(DialogMode.Update, Guid.Parse(mTextBoxID.Text), this, mAddressesView.SelectedItem != null ? mAddressesView.SelectedItem as Address : address).Show();
+                    DataGridRow dgr = grid.ItemContainerGenerator.ContainerFromItem(grid.SelectedItem) as DataGridRow;
+                    if (!dgr.IsMouseOver)
+                    {
+                        (dgr as DataGridRow).IsSelected = false; // deselect if clicking in the "white empty" space of the datagrid
+                    }
                 }
-            }
-        }
-
-        private void mAddressesView_KeyDownEvent(object sender, KeyEventArgs e) // delete the selected entry when ENTF-Key is pressed.
-        {
-            if (mAddressesView.SelectedItem == null)
-            {
-                return;
-            }
-
-            if (e.Key != Key.Delete)
-            {
-                return;
-            }
-            else
-            {
-                mButtonDeleteEmployee_Click(this, null);
-            }
-        }
-
-        private void mButtonDeleteEmployee_Click(object sender, RoutedEventArgs e)
-        {
-            if (mAddressesView.SelectedItem == null)
-            {
-                MessageBox.Show("Es wurde keine Addresse zum Löschen selektiert.");
-                return;
-            }
-
-            var result = MessageBox.Show("Wollen Sie den gewählten Datensatz wirklich löschen?", "Datensatz löschen", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (result == MessageBoxResult.No)
-            {
-                return;
-            }
-            else
-            {
-                var address = mAddressesView.SelectedItem as Address;
-                mAddressesView.Items.Remove(address);
             }
         }
     }

@@ -1,0 +1,4 @@
+E:\Projekte\HRManagement_ServiceApplication\bin\Debug\HR_Items.dll
+E:\Projekte\HRManagement_ServiceApplication\bin\Debug\HR_Items.pdb
+E:\Projekte\HRManagement_ServiceApplication\HR Items\obj\Debug\HR_Items.dll
+E:\Projekte\HRManagement_ServiceApplication\HR Items\obj\Debug\HR_Items.pdb

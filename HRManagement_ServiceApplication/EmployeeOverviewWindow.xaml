@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HRManagement_ServiceApplication"
+        DataContext="HRManagement_ServiceApplication.EmployeeOverviewViewModel"
         mc:Ignorable="d"
         Title="HR Management Software" Height="324.493" Width="771" ResizeMode="NoResize" Icon="Images/HRManagement.png">
     <Window.Resources>
@@ -34,35 +35,33 @@
             </Setter>
         </Style>
     </Window.Resources>
-    <Grid Margin="0,0,-6,-4">
+    <Grid Margin="0,0,-6,-3">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="31*"/>
             <ColumnDefinition Width="99*"/>
         </Grid.ColumnDefinitions>
-        <DataGrid x:Name="mEmployeeView" HorizontalAlignment="Left" Margin="10,32,0,73" Grid.ColumnSpan="2" Width="732" SelectionMode="Single" SelectionUnit="FullRow" AutoGenerateColumns="False" Background="{x:Null}">
+        <DataGrid x:Name="mEmployeeView" CanUserAddRows="False" SelectedItem="{Binding SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding AllEmployees, Mode=TwoWay}" HorizontalAlignment="Left" Margin="10,32,0,37" Grid.ColumnSpan="2" Width="732" SelectionMode="Single" SelectionUnit="FullRow" AutoGenerateColumns="False" Background="{x:Null}" MouseLeftButtonDown="mEmployeeView_MouseLeftButtonDown">
             <DataGrid.Columns>
                 <DataGridTextColumn x:Name="mFirstNameColumn" Header="Vorname" Binding="{Binding Path=FirstName}" IsReadOnly="True"/>
-                <DataGridTextColumn x:Name="mLastNameColumn" Header="Nachname" Binding="{Binding Path=LastName}" IsReadOnly="True"/>
+                <DataGridTextColumn x:Name="mLastNameColumn" Header="Nachname" Binding="{Binding Path=LastName}" IsReadOnly="True" SortDirection="Descending"/>
                 <DataGridTextColumn x:Name="mAgeColumn" Header="Alter" Binding="{Binding Path=Age}" IsReadOnly="True"/>
                 <DataGridTextColumn x:Name="mZipColumn" Header="Postleitzahl" Binding="{Binding Path=Addresses[0].Zip}" IsReadOnly="True"/>
                 <DataGridTextColumn x:Name="mStreetColumn" Header="Straße" Binding="{Binding Path=Addresses[0].Street}" IsReadOnly="True"/>
                 <DataGridTextColumn x:Name="mCityColumn" Header="Ort" Binding="{Binding Path=Addresses[0].City}" IsReadOnly="True"/>
                 <DataGridTextColumn x:Name="mStateColumn" Header="Staat" Binding="{Binding Path=Addresses[0].State}" IsReadOnly="True"/>
             </DataGrid.Columns>
-            <DataGrid.RowStyle>
-                <Style TargetType="{x:Type DataGridRow}">
-                    <EventSetter Event="MouseDoubleClick" Handler="mEmployeeView_MouseDoubleClick"/>
-                    <EventSetter Event="KeyDown" Handler="mEmployeeView_KeyDownEvent"/>
-                </Style>
-            </DataGrid.RowStyle>
+            <DataGrid.InputBindings>
+                <MouseBinding Gesture="LeftDoubleClick" Command="{Binding EditEmployeeCommand}" CommandParameter="{Binding SelectedItem}" />
+                <KeyBinding Gesture="Delete" Key="Delete" Command="{Binding DeleteEmployeeCommand}" CommandParameter="{Binding SelectedItem, Mode=OneWay}"/>
+            </DataGrid.InputBindings>
         </DataGrid>
         <Label x:Name="label" Content="Mitarbeiter" HorizontalAlignment="Left" Height="27" Margin="3,0,0,0" VerticalAlignment="Top" Width="168"/>
-        <Button x:Name="mRefreshButton" Grid.Column="1" HorizontalAlignment="Left" Height="27" Margin="529,0,0,0" VerticalAlignment="Top" Width="29" RenderTransformOrigin="-0.103,0.148" Click="mRefreshButton_Click" />
-        <Button x:Name="mButtonNewEmployee" Content="Neuer Mitarbeiter" HorizontalAlignment="Left" Height="21" Margin="10,231,0,0" VerticalAlignment="Top" Width="126" Click="mButtonNewEmployee_Click"/>
-        <Button x:Name="mButtonEditEmployee" Content="Mitarbeiter bearbeiten" HorizontalAlignment="Left" Height="21" Margin="135,231,0,0" VerticalAlignment="Top" Width="132" Grid.Column="1" Click="mButtonEditEmployee_Click"/>
-        <Button x:Name="mButtonDeleteEmployee" Content="Mitarbeiter löschen" HorizontalAlignment="Left" Height="21" Margin="439,231,0,0" VerticalAlignment="Top" Width="119" Grid.Column="1" Click="mButtonDeleteEmployee_Click"/>
-        <Button x:Name="mCreateXMLEmployees" Content="XML-Datei erstellen" Grid.Column="1" HorizontalAlignment="Left" Height="27" Margin="392,0,0,0" VerticalAlignment="Top" Width="125" Click="mCreateXMLEmployees_Click"/>
-        <CheckBox x:Name="mCheckDatabaseCheckbox" IsThreeState="True" Margin="10,266,0,10" IsChecked="{x:Null}" HorizontalAlignment="Left" Width="344" Grid.ColumnSpan="2" FontSize="10" />
-        <Separator Name="MySeparator" Height="4" Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="-10,0,0,25" Grid.ColumnSpan="2" Background="#FF688CAF" />
+        <Button x:Name="mRefreshButton" Grid.Column="1" HorizontalAlignment="Left" Height="27" Margin="428,0,0,0" VerticalAlignment="Top" Width="28" RenderTransformOrigin="-0.103,0.148" Command="{Binding RefreshButtonCommand}" />
+        <Button x:Name="mButtonNewEmployee" HorizontalAlignment="Left" Height="27" Margin="470,0,0,0" VerticalAlignment="Top" Width="28" Command="{Binding CreateNewEmployeeCommand}" Grid.Column="1"/>
+        <Button x:Name="mButtonEditEmployee" HorizontalAlignment="Left" Height="27" Margin="501,0,0,0" VerticalAlignment="Top" Width="28" Grid.Column="1" Command="{Binding EditEmployeeCommand}" CommandParameter="{Binding SelectedItem}"/>
+        <Button x:Name="mButtonDeleteEmployee" HorizontalAlignment="Left" Height="27" Margin="532,0,0,0" VerticalAlignment="Top" Width="28" Grid.Column="1"  Command="{Binding DeleteEmployeeCommand}" CommandParameter="{Binding SelectedItem}"/>
+        <Button x:Name="mCreateXMLEmployees" Grid.Column="1" HorizontalAlignment="Left" Height="27" Margin="397,0,0,0" VerticalAlignment="Top" Width="26" Command="{Binding XMLExportCommand}"/>
+        <CheckBox x:Name="mCheckDatabaseCheckbox" IsEnabled="False" IsThreeState="True" Margin="10,264,0,11" IsChecked="{Binding DatabaseCheckboxState}" Content="{Binding DatabaseCheckboxContent}" HorizontalAlignment="Left" Width="344" Grid.ColumnSpan="2" FontSize="10" />
+        <Separator Name="MySeparator" Height="4" Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="-10,0,0,30" Grid.ColumnSpan="2" Background="#FF688CAF" />
     </Grid>
 </Window>

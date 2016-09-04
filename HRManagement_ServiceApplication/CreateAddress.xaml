@@ -5,18 +5,30 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HRManagement_ServiceApplication"
         mc:Ignorable="d"
+        DataContext="HRManagement_ServiceApplication.CreateAddressViewModel"
         Title="Adresse erstellen" Height="272" Width="512" ResizeMode="NoResize" Icon="Images/HRManagement.png" >
+    <Window.Resources>
+        <local:EmployeeConverter x:Key="NameEmployeeConverter" />
+    </Window.Resources>
     <Grid Margin="0,0,2,-5">
         <GroupBox x:Name="mGroupBoxAddresse" Header="Addresse" HorizontalAlignment="Left" Height="191" Margin="22,0,0,0" VerticalAlignment="Top" Width="459"/>
         <Label x:Name="mLabelStreet" Content="Straße" HorizontalAlignment="Left" Margin="34,27,0,0" VerticalAlignment="Top" Width="72"/>
-        <TextBox x:Name="mTextBoxStreet" HorizontalAlignment="Left" Height="23" Margin="111,27,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="358"/>
+        <TextBox x:Name="mTextBoxStreet" HorizontalAlignment="Left" Height="23" Margin="111,27,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="358" Text="{Binding Street}"/>
         <Label x:Name="mLabelCity" Content="Ort" HorizontalAlignment="Left" Margin="34,65,0,0" VerticalAlignment="Top" Width="72"/>
-        <TextBox x:Name="mTextBoxCity" HorizontalAlignment="Left" Height="23" Margin="111,65,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="358"/>
+        <TextBox x:Name="mTextBoxCity" HorizontalAlignment="Left" Height="23" Margin="111,65,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="358" Text="{Binding City}"/>
         <Label x:Name="mLabelZip" Content="PLZ" HorizontalAlignment="Left" Margin="34,102,0,0" VerticalAlignment="Top" Width="72"/>
-        <TextBox x:Name="mTextBoxZip" HorizontalAlignment="Left" Height="23" Margin="111,102,0,-19" TextWrapping="Wrap" VerticalAlignment="Top" Width="83"/>
-        <Label x:Name="mLabelZip_Copy" Content="Staat" HorizontalAlignment="Left" Margin="34,146,0,0" VerticalAlignment="Top" Width="72"/>
-        <TextBox x:Name="mTextBoxState" HorizontalAlignment="Left" Height="23" Margin="111,146,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="358"/>
-        <Button x:Name="mButtonAddAddress" Content="Adresse hinzufügen" HorizontalAlignment="Right" Height="26" Margin="0,196,13,0" VerticalAlignment="Top" Width="145" RenderTransformOrigin="-0.001,0.629" Click="mButtonAddAddress_Click"/>
-
+        <TextBox x:Name="mTextBoxZip" HorizontalAlignment="Left" Height="23" Margin="111,102,0,-19" TextWrapping="Wrap" VerticalAlignment="Top" Width="83" Text="{Binding Zip, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" KeyUp="mTextBoxZip_KeyUp" GotFocus="mTextBoxZip_GotFocus" />
+        <Label x:Name="mLabelState" Content="Staat" HorizontalAlignment="Left" Margin="34,139,0,0" VerticalAlignment="Top" Width="72"/>
+        <TextBox x:Name="mTextBoxState" HorizontalAlignment="Left" Height="23" Margin="111,139,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="358" Text="{Binding State, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        <Button x:Name="mButtonAddAddress" Content="Adresse hinzufügen" HorizontalAlignment="Right" Height="26" Margin="0,196,13,0" VerticalAlignment="Top" Width="145" RenderTransformOrigin="-0.001,0.629" Command="{Binding AddSaveAddressCommand}">
+            <Button.CommandParameter>
+                <MultiBinding Converter="{StaticResource NameEmployeeConverter}">
+                    <Binding Path="Street"/>
+                    <Binding Path="City"/>
+                    <Binding Path="Zip"/>
+                    <Binding Path="State"/>
+                </MultiBinding>
+            </Button.CommandParameter>
+        </Button>
     </Grid>
 </Window>

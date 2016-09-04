@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WcfDatabaseService
+namespace HRManagement_ServiceApplication_HRItems
 {
     [DataContract]
     // The DataContract Object Classes with the DataMembers for the Employees.

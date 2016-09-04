@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.ServiceModel;
-using System.Text;
 using System.Data.SQLite;
 using System.IO;
 using System.Collections.ObjectModel;
+using HRManagement_ServiceApplication_HRItems;
 
 namespace WcfDatabaseService
 {
@@ -201,7 +198,16 @@ namespace WcfDatabaseService
                     while (reader.Read())
                     {
                         Address a = new Address();
-                        a.Id = Guid.Parse(reader["Id"].ToString());
+
+                        try
+                        {
+                            a.Id = Guid.Parse(reader["Id"].ToString());
+                        }
+                        catch (FormatException)
+                        {
+                            a.Id = Guid.NewGuid(); // if invalid Guid was manually added in the sql file directly
+                        }
+
                         a.Street = reader["Street"].ToString();
                         int zip = 0;
                         if (Int32.TryParse(reader["Zip"].ToString(), out zip))
@@ -258,7 +264,16 @@ namespace WcfDatabaseService
                     while (reader.Read())
                     {
                         Employee e = new Employee();
-                        e.Id = Guid.Parse(reader["Id"].ToString());
+
+                        try
+                        {
+                            e.Id = Guid.Parse(reader["Id"].ToString()); // if invalid Guid was manually added in the sql file directly
+                        }
+                        catch (FormatException)
+                        {
+                            e.Id = Guid.NewGuid();
+                        }
+
                         e.FirstName = reader["FirstName"].ToString();
                         e.LastName = reader["LastName"].ToString();
                         int age = -1;
@@ -377,7 +392,7 @@ namespace WcfDatabaseService
         /// This method calls the update methods for employees and the address.
         /// </summary>
         /// <param name="The Employee to update"></param>
-        /// <returns>true if updated successfully, false if not</returns>
+        /// <returns>1 if updated successfully, -1 if not</returns>
         public int UpdateEmployeeAndAddresses(Employee e)
         {
             foreach (var address in e.Addresses)
@@ -412,6 +427,11 @@ namespace WcfDatabaseService
 
         #region deleting employees and addresses of the database.
 
+        /// <summary>
+        /// Delete all addresses of the employee with the Employee-ID given.
+        /// </summary>
+        /// <param name="employeeId"></param>
+        /// <returns>1 or more if all successfully deleted, 0 if not successful and -1 if error</returns>
         public int DeleteAddressesOfEmployee(Guid employeeId)
         {
             try
@@ -446,7 +466,7 @@ namespace WcfDatabaseService
         /// <summary>
         /// This method deletes the given address if it isn't as foreign key in any other employee.
         /// </summary>
-        /// <param name="The address to delete"></param>
+        /// <param name="int">The count of deleted addresses</param>
         public int DeleteAddress(Address a)
         {
             try
@@ -524,12 +544,18 @@ namespace WcfDatabaseService
 
         #endregion
 
+        #region database check
+
         private string GetDatabaseConnectionName()
         {
             string folderPathToDatabase = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), GetApplicationName());
             return Path.Combine(folderPathToDatabase, string.Format("{0}.sqlite", GetApplicationName()));
         }
 
+        /// <summary>
+        /// Checks if the database is available and can be connected.
+        /// </summary>
+        /// <returns></returns>
         public bool CheckDatabaseAvailability()
         {
             var database = GetDatabaseConnectionName();
@@ -538,7 +564,6 @@ namespace WcfDatabaseService
             {
                 return false;
             }
-
 
             var connectionString = string.Format(@"data source='{0}'", database);
             using (var databaseConnection = new SQLiteConnection(connectionString))
@@ -553,5 +578,7 @@ namespace WcfDatabaseService
 
             return true;
         }
+
+        #endregion
     }
 }
