@@ -271,7 +271,7 @@ namespace HRManagement_ServiceApplication
         /// <param name="employee"></param>
         public void DeleteEmployee(Employee employee)
         {
-            var result = MessageBox.Show("Wollen Sie den gewählten Datensatz und die dazugehörige(n) Adresse(n) wirklich löschen?", string.Empty, MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var result = MessageBox.Show("Wollen Sie den gewählten Datensatz und die dazugehörige(n) Adresse(n) wirklich löschen?", "Adresse wirklich löschen", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result == MessageBoxResult.No)
             {
                 return;
@@ -292,7 +292,7 @@ namespace HRManagement_ServiceApplication
 
                 if (client.DeleteEmployee(employee) != 1)
                 {
-                    MessageBox.Show("Der Mitarbeiter konnte nicht gelöscht werden.");
+                    MessageBox.Show("Der Mitarbeiter konnte nicht gelöscht werden.", "Mitarbeiter nicht gelöscht", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
 
                 this.UpdateEmployeeList();

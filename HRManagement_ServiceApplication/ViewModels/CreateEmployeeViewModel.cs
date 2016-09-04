@@ -341,12 +341,12 @@ namespace HRManagement_ServiceApplication
             int retVal = serviceClient.UpdateEmployeeAndAddresses(mEmployee);
             if (retVal > 0)
             {
-                MessageBox.Show("Der Datensatz wurde erfolgreich aktualisiert.");
+                MessageBox.Show("Der Datensatz wurde erfolgreich aktualisiert.", "Mitarbeiter aktualisiert", MessageBoxButton.OK, MessageBoxImage.Information);
                 mEmployeeViewModel.UpdateEmployeeList();
             }
             else
             {
-                MessageBox.Show("Es gab ein Problem beim Aktualisieren der Daten. Bitte prüfen Sie die eingegebenen Daten auf ihre Korrektheit.");
+                MessageBox.Show("Es gab ein Problem beim Aktualisieren der Daten. Bitte prüfen Sie die eingegebenen Daten auf ihre Korrektheit.", "Fehler bei Update", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
