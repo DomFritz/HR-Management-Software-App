@@ -32,5 +32,13 @@ namespace HRManagement_ServiceApplication
         {
             mModel.StartAddAddressControl();
         }
+
+        public void FireCanExecuteChanged()
+        {
+            if (CanExecuteChanged != null)
+            {
+                CanExecuteChanged(this, EventArgs.Empty);
+            }
+        }
     }
 }

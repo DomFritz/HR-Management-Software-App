@@ -31,5 +31,13 @@ namespace HRManagement_ServiceApplication.Commands
         {
             mEmployeeOverviewViewModel.CreateNewEmployee();
         }
+
+        public void FireCanExecuteChanged()
+        {
+            if (CanExecuteChanged != null)
+            {
+                CanExecuteChanged(this, EventArgs.Empty);
+            }
+        }
     }
 }

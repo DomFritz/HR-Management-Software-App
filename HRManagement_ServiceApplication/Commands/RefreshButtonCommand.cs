@@ -26,5 +26,13 @@ namespace HRManagement_ServiceApplication.Commands
         {
             mEmployeeOverviewViewModel.UpdateEmployeeList();
         }
+
+        public void FireCanExecuteChanged()
+        {
+            if (CanExecuteChanged != null)
+            {
+                CanExecuteChanged(this, EventArgs.Empty);
+            }
+        }
     }
 }
